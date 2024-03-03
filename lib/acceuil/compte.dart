@@ -1,20 +1,15 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_emoji_feedback/flutter_emoji_feedback.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gestion_salon_coiffure/Admin_Page/MesNotes.dart';
 import 'package:gestion_salon_coiffure/Info_reservation/mes_reservation.dart';
 import 'package:gestion_salon_coiffure/acceuil/Update_users.dart';
-import 'package:gestion_salon_coiffure/constants.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
 import 'package:gestion_salon_coiffure/modules/login_mogule/login_page.dart';
-import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_fonts/google_fonts.dart';
 
 class Compte extends StatefulWidget {
   const Compte({super.key});
@@ -29,6 +24,7 @@ class _CompteState extends State<Compte> {
   String email = '';
   String number = "";
   String token = "";
+  int? IdRole = 0;
   int rating = 0;
   TextEditingController _controlCommentaire = TextEditingController();
 
@@ -41,11 +37,12 @@ class _CompteState extends State<Compte> {
       email = prefs.get('email').toString();
       number = prefs.get('phone').toString();
       token = prefs.get('token').toString();
+      IdRole = prefs.getInt('id_role');
     });
 
     print(number);
     print(prenom);
-    print(email);
+    print(IdRole);
   }
 
   Future Logout() async {
@@ -146,316 +143,179 @@ class _CompteState extends State<Compte> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        title: Titre("Mon espace", 24, Colors.white),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ElevatedButton(
-                //     onPressed: () {
-                //       yanno();
-                //     },
-                //     child: Text("$token")),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color.fromARGB(255, 138, 138, 138),
-                    ),
-                    child: Center(
+        // backgroundColor: Colors.blue,
+        appBar: AppBar(
+          title: Titre("Mon espace", 24, Colors.black),
+          centerTitle: true,
+          // backgroundColor: Colors.blue,
+          automaticallyImplyLeading: false,
+        ),
+        body: FutureBuilder(
+            future: Future.delayed(Duration(seconds: 1)),
+            builder: (context, snapshot) {
+              if (IdRole == 0) {
+                return Scaffold(
+                  body: SpinKitCircle(
+                    color: Colors.black,
+                  ),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Titre(nom, 20, Colors.white),
-                          Mytext(
-                            email,
-                            15,
-                            Colors.white,
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //       yanno();
+                          //     },
+                          //     child: Text("$token")),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: const Color.fromARGB(255, 138, 138, 138),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Titre(nom, 20, Colors.white),
+                                    Mytext(
+                                      email,
+                                      15,
+                                      Colors.white,
+                                    ),
+                                    Mytext(number, 15, Colors.white),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                          Mytext(number, 15, Colors.white),
-                          SizedBox(
-                            height: 5,
+                          GridView.count(
+                            shrinkWrap: true,
+                            primary: false,
+                            padding: const EdgeInsets.all(20),
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: 2,
+                            children: <Widget>[
+                              if (IdRole == 2)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Mes_reservations()));
+                                  },
+                                  child: gridmoncompteRes(
+                                      "Activité",
+                                      Icons.calendar_month,
+                                      '${Reservation_A_V.length}'),
+                                ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => details()));
+                                },
+                                child:
+                                    gridmoncompte("Mon profil", Icons.person),
+                              ),
+                              if (IdRole == 1)
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MesNotes()));
+                                  },
+                                  child: gridmoncompte(
+                                      "Mes notes", FontAwesomeIcons.chartLine),
+                                ),
+                              GestureDetector(
+                                onTap: () {
+                                  showCupertinoDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                        title: const Text(
+                                          "Deconnexion",
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 18),
+                                        ),
+                                        content: const Text(
+                                          "êtes vous sur de quitter ?",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        actions: <Widget>[
+                                          CupertinoDialogAction(
+                                            isDefaultAction: true,
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              ReservationAvenir();
+                                            },
+                                            child: Text("Non"),
+                                          ),
+                                          CupertinoDialogAction(
+                                            isDefaultAction: true,
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: TextButton(
+                                                onPressed: () async {
+                                                  final prefs =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  prefs.remove('token');
+                                                  prefs.remove('name');
+                                                  prefs.remove('prenom');
+                                                  prefs.remove('phone');
+                                                  prefs.remove('email');
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                          Login_page()),
+                                                    (route) =>
+                                                        false, // Utilisez cette fonction pour supprimer toutes les pages jusqu'à la nouvelle page
+                                                  );
+                                                },
+                                                child: Text("Oui")),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: gridmoncompte("Logout", Icons.logout),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  gridmoncompte(
+                                      'Appreciations', Icons.rate_review);
+                                },
+                              )
+                            ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                GridView.count(
-                  shrinkWrap: true,
-                  primary: false,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Mes_reservations()));
-                      },
-                      child: gridmoncompteRes("Mes reservations",
-                          Icons.calendar_month, '${Reservation_A_V.length}'),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => details()));
-                      },
-                      child: gridmoncompte("Mon profil", Icons.person),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        showCupertinoDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CupertinoAlertDialog(
-                              title: const Text(
-                                "Deconnexion",
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 18),
-                              ),
-                              content: const Text(
-                                "êtes vous sur de quitter ?",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              actions: <Widget>[
-                                CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    ReservationAvenir();
-                                  },
-                                  child: Text("Non"),
-                                ),
-                                CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        final prefs = await SharedPreferences
-                                            .getInstance();
-                                        prefs.remove('token');
-                                        prefs.remove('name');
-                                        prefs.remove('prenom');
-                                        prefs.remove('phone');
-                                        prefs.remove('email');
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return Login_page();
-                                        }));
-                                      },
-                                      child: Text("Oui")),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: gridmoncompte("Logout", Icons.logout),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        print("Voter");
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) {
-                              return Scaffold(
-                                appBar: AppBar(
-                                  backgroundColor: Colors.blue,
-                                  title: Mytext("Evaluer une presation", 20,
-                                      Colors.white),
-                                      centerTitle: true,
-                                ),
-                                body: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(height: 200,width:double.infinity,
-                                          child: Image.asset('assets/Rate.png'),
-                                          ),
-                                      
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: NewBold(
-                                                "SELECTIONNER LE SERVICE",
-                                                20,
-                                                Colors.black),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          DropdownButtonFormField(
-                                            decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.blue,
-                                                      width: 1)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.blue,
-                                                      width: 1)),
-                                            ),
-                                            items: service.map((e) {
-                                              return DropdownMenuItem(
-                                                child: Mytext(e['libelle'], 15,
-                                                    Colors.blue),
-                                                value: e['id'],
-                                              );
-                                            }).toList(),
-                                            onChanged: (selectedValue) {
-                                              print("Selected: $selectedValue");
-
-                                              setState(() {
-                                                recup = selectedValue as int?;
-                                              });
-                                            },
-                                            value: recup,
-                                          ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: NewBold(
-                                                "Cliquez sur l'emoji commencer une évaluation", 20, Colors.black),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          // Align(
-                                          //   alignment: Alignment.topLeft,
-                                          //   child: RatingBar.builder(
-                                          //       initialRating: 1,
-                                          //       itemSize: 40,
-                                          //       minRating: 0,
-                                          //       itemBuilder: (context, _) =>
-                                          //           Icon(
-                                          //             Icons.star,
-                                          //             color: Colors.yellow,
-                                          //           ),
-                                          //       onRatingUpdate: (ratig) =>
-                                          //           setState(() {
-                                          //             rating = ratig.toInt();
-                                          //             print(rating);
-                                          //           })),
-                                          // ),
-                                          EmojiFeedback(
-                                        animDuration: const Duration(milliseconds: 300),
-                                        curve: Curves.bounceIn,
-                                        inactiveElementScale: .5,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            rating=value;
-                                          });
-                                        },
-                                      ),
-                                       SizedBox(
-                                            height: 5,
-                                          ),
-                                         
-                                          TextFormField(
-                                            controller: _controlCommentaire,
-                                            maxLines: 2,
-                                            decoration: InputDecoration(
-                                              hintText: 'Laisse un commentaire',
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.blue,
-                                                      width: 1)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey,
-                                                      width: 1)),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 25,
-                                          ),
-                                          boutton(context, false, Colors.blue,
-                                              'Soumettre', () {
-                                            Noter();
-                                          })
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                      },
-                      child: gridmoncompte(
-                        "Evaluation",
-                        Icons.star,
-                      ),
-                    ),
-                  ],
-                ),
-                // DropdownButtonFormField(
-                //   decoration: InputDecoration(
-                //     focusedBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //         borderSide: BorderSide(color: Colors.blue, width: 1)),
-                //     enabledBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.circular(10),
-                //         borderSide: BorderSide(color: Colors.blue, width: 1)),
-                //   ),
-                //   items: service.map((e) {
-                //     return DropdownMenuItem(
-                //       child: Mytext(e['libelle'], 15, Colors.blue),
-                //       value: e['id'],
-                //     );
-                //   }).toList(),
-                //   onChanged: (selectedValue) {
-                //     print("Selected: $selectedValue");
-
-                //     setState(() {
-                //       recup = selectedValue as int?;
-                //     });
-                //   },
-                //   value: recup,
-                // ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    ;
+                );
+              }
+            }));
   }
 }
 

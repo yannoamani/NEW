@@ -23,7 +23,7 @@ class _splash_screenState extends State<splash_screen> {
 
     Timer(Duration(seconds: 10), () async{
       final pefs= await SharedPreferences.getInstance();
-      if (pefs.getString('token')==null) {
+      if (pefs.getString('token')!=null) {
          if (pefs.getInt('id_role') == 2) {
          
           Navigator.pushReplacement(context,

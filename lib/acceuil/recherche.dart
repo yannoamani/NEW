@@ -290,7 +290,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: Container(
-                                  color: Colors.white,
+                                 decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(
+                                              0.5), // Couleur de l'ombre
+                                          spreadRadius: 5, // Étendue de l'ombre
+                                          blurRadius: 7, // Flou de l'ombre
+                                          offset: Offset(
+                                              0, 3), // Décalage de l'ombre
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(10)),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Column(

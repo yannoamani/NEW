@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class detail_service extends StatefulWidget {
   const detail_service({super.key});
@@ -43,11 +44,12 @@ class _detail_serviceState extends State<detail_service> {
       });
 
       if (response.statusCode == 200) {
+         final decode = jsonDecode(response.body);
         setState(() {
-          final decode = jsonDecode(response.body);
+         
           info_servie = decode['data'];
           img = info_servie['photos'];
-          note = info_servie['notes'];
+          note = info_servie['reservations'];
         });
         if (info_servie.isNotEmpty) {
           setState(() {
@@ -76,11 +78,13 @@ class _detail_serviceState extends State<detail_service> {
   }
 
   Future getdata() async {
-    while (info_servie.isEmpty) {
+    // while (info_servie.isEmpty) {
       await Future.delayed(Duration(seconds: 1));
-    }
+    // }
     return "error";
   }
+
+  int page = 0;
 
   @override
   void initState() {
@@ -94,19 +98,18 @@ class _detail_serviceState extends State<detail_service> {
     return FutureBuilder(
       future: getdata(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (info_servie.isEmpty) {
           return Scaffold(
-              backgroundColor: Colors.white,
-              body: SpinKitCircle(
-                color: Colors.blue,
-              ),
-            ); 
+            backgroundColor: Colors.white,
+            body: SpinKitCircle(
+              color: Colors.blue,
+            ),
+          );
         }
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         } else {
           return Scaffold(
-             
               bottomNavigationBar: BottomAppBar(
                 child: ElevatedButton(
                     onPressed: () {
@@ -124,37 +127,42 @@ class _detail_serviceState extends State<detail_service> {
                 slivers: [
                   SliverAppBar(
                     title: Titre("${info_servie['libelle']}", 20, Colors.black),
-                    actions: [Icon(Icons.monitor_heart)],
+                    actions: [Mytext('${img.length}', 15, Colors.black)],
                     pinned: true,
                     floating: true,
                     expandedHeight: 300,
-                    
-                    
                     flexibleSpace: FlexibleSpaceBar(
                       background: CarouselSlider(
-                        options: CarouselOptions(autoPlay: true, height: 300.0,),
+                        options: CarouselOptions(
+                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enlargeCenterPage: true,
+                          autoPlay: true,
+                          height: 300.0,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              page = index;
+                            });
+                          },
+                        ),
                         items: img.map((i) {
                           return Builder(
                             builder: (BuildContext context) {
                               String imagePath =
                                   ImgDB("public/image/${i['path']}");
                               return GestureDetector(
-                                 onTap: () {
-               
-              },
-                              
+                                onTap: () {},
                                 child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
                                     child: Image.network(
-                                      i['path'] == null
-                                          ? 'https://via.placeholder.com/200'
-                                          : imagePath,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    )),
+                                  i['path'] == null
+                                      ? 'https://via.placeholder.com/200'
+                                      : imagePath,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                )),
                               );
                             },
                           );
@@ -165,6 +173,10 @@ class _detail_serviceState extends State<detail_service> {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
+                        AnimatedSmoothIndicator(
+                          
+                          curve: Curves.bounceInOut,
+                            activeIndex: page, count: img.length),
                         Container(
                           color: Colors.grey[100],
                           width: double.infinity,
@@ -229,7 +241,10 @@ class _detail_serviceState extends State<detail_service> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                Text(info_servie["description"],style: TextStyle(color: Colors.black),)
+                                  Text(
+                                    info_servie["description"],
+                                    style: TextStyle(color: Colors.black),
+                                  )
                                 ]),
                           ),
                         ),
@@ -248,24 +263,24 @@ class _detail_serviceState extends State<detail_service> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    children: [
-                                      for (var i = 0;
-                                          i < info_servie['moyenne'];
-                                          i++)
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                          size: 35,
-                                        ),
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   children: [
+                                  //     for (var i = 0;
+                                  //         i < info_servie['moyenne'];
+                                  //         i++)
+                                  //       Icon(
+                                  //         Icons.star,
+                                  //         color: Colors.amber,
+                                  //         size: 35,
+                                  //       ),
+                                  //   ],
+                                  // ),
                                   SizedBox(
                                     height: 5,
                                   ),
                                   Text.rich(
                                     TextSpan(
-                                        text: '${info_servie['moyenne']}',
+                                        
                                         children: [
                                           TextSpan(
                                               text:
@@ -294,36 +309,36 @@ class _detail_serviceState extends State<detail_service> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ListTile(
-                                leading: CircleAvatar(
-                                  child: Text(
-                                      "${result['user']['nom'].toString().substring(0, 1)}${result['user']['prenom'].toString().substring(0, 1).toUpperCase()}"),
-                                ),
-                                title: NewText(
-                                    "${result['user']['nom']},${result['user']['prenom'].toString().substring(0, 1).toUpperCase()}",
-                                    18,
-                                    Colors.black),
-                                subtitle: NewText("${result['created_at']}", 15,
-                                    Colors.black38),
-                              ),
+                              // ListTile(
+                              //   leading: CircleAvatar(
+                              //     child: Text(
+                              //         "${result['user']['nom'].toString().substring(0, 1)}${result['user']['prenom'].toString().substring(0, 1).toUpperCase()}"),
+                              //   ),
+                              //   title: NewText(
+                              //       "${result['user']['nom']},${result['user']['prenom'].toString().substring(0, 1).toUpperCase()}",
+                              //       18,
+                              //       Colors.black),
+                              //   subtitle: NewText("${result['created_at']}", 15,
+                              //       Colors.black38),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
                                 child: Row(
                                   children: [
-                                    for (var i = 0; i < result['rate']; i++)
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.black,
-                                        size: 20,
-                                      ),
+                                    // for (var i = 0; i < result['rate']; i++)
+                                    //   Icon(
+                                    //     Icons.star,
+                                    //     color: Colors.black,
+                                    //     size: 20,
+                                    //   ),
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20),
-                                child: Mytext("${result['commentaire']}", 15,
-                                    Colors.black),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(left: 20),
+                              //   child: Mytext("${result['commentaire']}", 15,
+                              //       Colors.black),
+                              // ),
                               SizedBox(
                                 height: 30,
                               )

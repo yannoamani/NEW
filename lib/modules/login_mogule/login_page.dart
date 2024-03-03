@@ -74,7 +74,7 @@ class _Login_pageState extends State<Login_page> {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const acceuil()));
         } else {
-          Navigator.pushReplacement(context,
+            Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const Home_Admin()));
         }
 
@@ -87,7 +87,7 @@ class _Login_pageState extends State<Login_page> {
       }
     } catch (e) {
       setState(() {
-        charg == false;
+        charg = false;
       });
 
       print(e);

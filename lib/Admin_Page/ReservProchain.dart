@@ -17,7 +17,7 @@ class ReservationProchain extends StatefulWidget {
 class _ReservationProchainState extends State<ReservationProchain> {
   List MesReservations = [{}];
 // ignore: non_constant_identifier_names
-  Future<void> GetReservation() async {
+  Future<void> reservationProchaine() async {
     final prefs = await SharedPreferences.getInstance();
 
     var url = monurl('reservations');
@@ -39,9 +39,9 @@ class _ReservationProchainState extends State<ReservationProchain> {
         
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.blue,
+            // backgroundColor: Colors.blue,
             centerTitle: true,
-            title:   Titre('Reservation Prochain', 25, Colors.black),),
+            title:   Titre('Reservation Futures', 25, Colors.black),),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -58,7 +58,7 @@ class _ReservationProchainState extends State<ReservationProchain> {
                 String NewDate = DateFormat.yMMMEd('fr_FR').format(Convert);
                 return ListTile(
                   title: NewText('Anon amani beda yann ', 15, Colors.black),
-                  subtitle: NewText('$NewDate à 20:00', 12, Colors.red),
+                  subtitle: NewBold('$NewDate à 20:00', 12, Colors.red),
                   trailing: FaIcon(FontAwesomeIcons.arrowRight),
                   onTap: () {
                     showModalBottomSheet(
@@ -69,11 +69,9 @@ class _ReservationProchainState extends State<ReservationProchain> {
                         context: context,
                         builder: (BuildContext context) {
                           return  Scaffold(
-                            bottomNavigationBar:
-                            DateTime.now().hour>Convert.hour?
-                             BottomAppBar(
-                              child: boutton(context, false,  Colors.blue, 'Confirmer', () { }),
-                            ):null,
+                           
+                            
+                             
                             body: Padding(
                               padding: const EdgeInsets.only(top: 0,left: 0),
                               child: Padding(
@@ -136,25 +134,42 @@ class _ReservationProchainState extends State<ReservationProchain> {
                                                     ),
                                                   ),
                                                   SizedBox(height: 15,),
-                                      Titre('Informations sur le client', 20, Colors.black),
+                                      Center(child: Titre('Informations sur le client', 20, Colors.black)),
                                       SizedBox(height: 15,),
                                        ListTile(
                                         leading: FaIcon(FontAwesomeIcons.user),
-                                        title: NewText('Anon Amni Beda Yann clarance', 15, Colors.black),),
+                                        title: NewText('Anon ', 15, Colors.black),
+                                        subtitle: NewText('Amani Beda Yann clarance', 15, Colors.black),
+                                        ),
+                                        Divider(),
                                     
                                      
                                           ListTile(
                                         leading: FaIcon(FontAwesomeIcons.calendar),
-                                        title: NewText('$NewDate', 15, Colors.black),),
+                                        title: NewText('$NewDate', 20, Colors.black),),
                                     
+                                    Divider(),
                                    
-                                      
+                                    
+                                    
+                                        
                                      ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.clock),
-                                        title: NewText('12:10', 15, Colors.black),),
-                                     ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.timeline),
-                                        title: NewText('2h', 15, Colors.black),),
+                                        leading: FaIcon(FontAwesomeIcons.hourglass),
+                                        title: NewText('2h', 20, Colors.black),),
+                                        Divider(),
+                                        SizedBox(height: 5,),
+                                        Center(child: Titre("Informations sur la reservation", 20, Colors.black)),
+                                        SizedBox(height: 20,),
+                                          
+                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            NewText("Total à payer", 15, Colors.black),
+                                            NewBold('200000 FCFA', 15, Colors.red)
+
+                                          ],
+                                         )
+                                     
                                     ],
                                    ),
                                  )

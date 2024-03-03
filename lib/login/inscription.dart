@@ -355,20 +355,29 @@ class _inscriptionState extends State<inscription> {
                       // }),
                     ],
                   )),
-              Row(
-                children: [
-                 Mytext("J'ai un compte", 15, Colors.black),
-                  Spacer(),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => const Login_page()));
-                      },
-                      child: Titre("Cliquez ici", 15, Colors.blue),)
-                ],
+                  Mytext("Déjà membre ? ?", 15, Colors.black),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => Login_page()));
+                },
+                child: Titre("Connectez-vous ici !", 15, Colors.blue),
               ),
+                  //  Mytext("J'ai un compte", 15, Colors.black),
+              // Row(
+              //   children: [
+                
+              //     Spacer(),
+              //     TextButton(
+              //         onPressed: () {
+              //           Navigator.push(
+              //               context,
+              //               CupertinoPageRoute(
+              //                   builder: (context) => const Login_page()));
+              //         },
+              //         child: Titre("Cliquez ici", 15, Colors.blue),)
+              //   ],
+              // ),
             ],
           ),
         ),

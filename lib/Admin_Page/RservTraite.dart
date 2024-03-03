@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gestion_salon_coiffure/Info_reservation/mes_reservation.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,12 +16,12 @@ class ReservationTraite extends StatefulWidget {
 }
 
 class _ReservationTraiteState extends State<ReservationTraite> {
-  List MesReservations = [{}];
+  List MesReservations = [];
 // ignore: non_constant_identifier_names
   Future<void> GetReservation() async {
     final prefs = await SharedPreferences.getInstance();
 
-    var url = monurl('reservations');
+    var url = monurl('reservationOperateur');
     final uri = Uri.parse(url);
     final response =
         await http.get(uri, headers: header('${prefs.getString('token')}'));
@@ -33,132 +34,169 @@ class _ReservationTraiteState extends State<ReservationTraite> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    GetReservation();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.blue,
+            // backgroundColor: Colors.blue,
             centerTitle: true,
-            title:   Titre('Reservation à traiter', 25, Colors.black),),
+            title: Titre('Reservatioins Traités', 25, Colors.black),
+          ),
           SliverToBoxAdapter(
             child: Column(
               children: [
                 // Titre('Reservation à venir', 25, Colors.black),
-                
               ],
             ),
           ),
           SliverList.separated(
-              itemCount: 10,
+              itemCount: 15,
               itemBuilder: (context, index) {
-                String date = '2024-04-20';
+                // final resultats = MesReservations[index];
+                // final nom = resultats['user']['nom'];
+                // final prenom = resultats['user']['prenom'];
+                // String date = resultats['date'];
+                // String heure = resultats['heure'];
+                final date = "2024-02-01";
+                final heure = "13:00";
+                final nom = "Anon";
+                final prenom = "Amani Beda Yann ";
+                final status = 'Valider';
                 DateTime Convert = DateTime.parse(date);
                 String NewDate = DateFormat.yMMMEd('fr_FR').format(Convert);
                 return ListTile(
-                  title: NewText('Anon amani beda yann ', 15, Colors.black),
-                  subtitle: NewText('$NewDate à 20:00', 12, Colors.red),
+                  title: NewText('$nom $prenom', 15, Colors.black),
+                  subtitle: NewBold('$NewDate à $heure', 12, Colors.red),
                   trailing: FaIcon(FontAwesomeIcons.arrowRight),
                   onTap: () {
                     showModalBottomSheet(
-                      //  backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        // isDismissible: true,
-        elevation: 8,
+                        //  backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        // isDismissible: true,
+                        elevation: 8,
                         context: context,
                         builder: (BuildContext context) {
-                          return  Scaffold(
-                            bottomNavigationBar:
-                            DateTime.now().hour>Convert.hour?
-                             BottomAppBar(
-                              child: boutton(context, false,  Colors.blue, 'Confirmer', () { }),
-                            ):null,
+                          return Scaffold(
                             body: Padding(
-                              padding: const EdgeInsets.only(top: 0,left: 0),
+                              padding: const EdgeInsets.only(top: 0, left: 0),
                               child: Padding(
                                 padding: const EdgeInsets.all(0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                
                                     Container(
                                       height: 200,
                                       // width: dou,
-                                      child: Image.asset('assets/pngwing.com.png',
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      fit: BoxFit.contain,
+                                      child: Image.asset(
+                                        'assets/pngwing.com.png',
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        fit: BoxFit.contain,
                                       ),
                                     ),
-                                    SizedBox(height: 15,),
-                                   
-                                 Padding(
-                                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                                   child: Column(
-                                     mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                                    children: [
-                                       Container(
-                                        
-                                                    width: 200,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.orange,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                10)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                              
-                                                      child: Center(
-                                                        child: Row(
-                                                           mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            FaIcon(
-                                                              FontAwesomeIcons
-                                                                  .circleCheck,
-                                                              color: Colors.white,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Mytext(
-                                                                "En Attente",
-                                                                20,
-                                                                Colors.white),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 15,),
-                                      Titre('Informations sur le client', 20, Colors.black),
-                                      SizedBox(height: 15,),
-                                       ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.user),
-                                        title: NewText('Anon Amni Beda Yann clarance', 15, Colors.black),),
-                                    
-                                     
-                                          ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.calendar),
-                                        title: NewText('$NewDate', 15, Colors.black),),
-                                    
-                                   
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Column(
                                       
-                                     ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.clock),
-                                        title: NewText('12:10', 15, Colors.black),),
-                                     ListTile(
-                                        leading: FaIcon(FontAwesomeIcons.timeline),
-                                        title: NewText('2h', 15, Colors.black),),
-                                    ],
-                                   ),
-                                 )
-                                  
+                                        children: [
+                                          Card(
+                                            color: status == 'Attente'
+                                                ? Colors.orange
+                                                : Colors.green,
+                                            child: ListTile(
+                                              leading: status == 'Attente'
+                                                  ? FaIcon(
+                                                      FontAwesomeIcons.xmark,
+                                                      color: Colors.white,
+                                                    )
+                                                  : FaIcon(FontAwesomeIcons
+                                                      .circleCheck,color: Colors.white,),
+                                              title: Center(
+                                                  child: NewBold('$status', 25,
+                                                      Colors.white)),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          Center(
+                                            child: Titre(
+                                                'Informations sur le client',
+                                                20,
+                                                Colors.black),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          ListTile(
+                                            leading:
+                                                FaIcon(FontAwesomeIcons.user),
+                                            title: NewText(
+                                                '$nom', 15, Colors.black),
+                                            subtitle: NewText(
+                                                '$prenom', 15, Colors.black),
+                                          ),
+                                          Divider(),
+                                          ListTile(
+                                            leading: FaIcon(
+                                                FontAwesomeIcons.calendar),
+                                            title: NewText(
+                                                '$NewDate', 15, Colors.black),
+                                          ),
+                                          Divider(),
+                                          ListTile(
+                                            leading:
+                                                FaIcon(FontAwesomeIcons.clock),
+                                            title: NewText(
+                                                '$heure', 15, Colors.black),
+                                          ),
+                                          Divider(),
+                                          ListTile(
+                                            leading: FaIcon(
+                                                FontAwesomeIcons.hourglass),
+                                            title:
+                                                NewText('2h', 15, Colors.black),
+                                          ),
+                                          Divider(),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Center(
+                                              child: Titre(
+                                                  'Informations sur la reservaton',
+                                                  20,
+                                                  Colors.black)),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Divider(),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              NewBold(
+                                                  "Total", 20, Colors.black),
+                                              NewBold(
+                                                  "20000FCFA", 20, Colors.red)
+                                            ],
+                                          ),
+                                          Divider(),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),

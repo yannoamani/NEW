@@ -38,7 +38,7 @@ class _prise_rdvState extends State<prise_rdv> {
     // reserv.value.getServices().then((value) {
     //   setState(() {
     //     Liste_Service = value;
-        // duree = Liste_Service['duree'];
+    // duree = Liste_Service['duree'];
     //     Photos = Liste_Service['photos'];
     //   });
     // });
@@ -79,7 +79,7 @@ class _prise_rdvState extends State<prise_rdv> {
     print(TrueTimeDate);
   }
 
-  Future<dynamic> Reserver() async {
+  Future<dynamic> reserver() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -91,13 +91,12 @@ class _prise_rdvState extends State<prise_rdv> {
             'service_id': prefs.getInt('id_service'),
             'user_id': prefs.getInt('id'),
             'heure': heure,
-            'date':
-                "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}",
+            'date': '${today.toString().split(" ")[0]}',
             'coupon': _ControlCoupon.text
           }),
           headers: header("${prefs.getString('token')}"));
       final resultat = jsonDecode(response.body);
-
+      print(heure);
       print(resultat);
       if (resultat['status']) {
         // message(context, "En cours de traitement", Colors.blue);
@@ -115,39 +114,48 @@ class _prise_rdvState extends State<prise_rdv> {
     print('Je marche');
   }
 
-  // verification
-  bool char = false;
+  // verificationReservation
+  late bool char = false;
 
-  Future<dynamic> Verification(String h, String d) async {
+  Future<dynamic> verificationReservation() async {
+    print(
+        "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}");
+    print(
+        "${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}");
     try {
       final prefs = await SharedPreferences.getInstance();
 
       final url = monurl("verifieReservation");
       final uri = Uri.parse(url);
 
-      final response = await http.post(uri,
-          body: jsonEncode({
+      final response = await http.post(
+        uri,
+        body: jsonEncode(
+          {
             'service_id': prefs.getInt('id_service'),
             'user_id': prefs.getInt('id'),
-            'heure': '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}',
-            'date': d
-            //  "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}",
-          }),
-          headers: header("${prefs.getString('token')}"));
+            'heure':
+                '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}',
+            'date': today.toString().split(" ")[0],
+          },
+        ),
+        headers: header("${prefs.getString('token')}"),
+      );
+
       final resultat = jsonDecode(response.body);
       // print(resultat);
 
-     setState(() {
+      setState(() {
         verif = resultat['status'];
-     });
+      });
 
       print(resultat['status']);
-      if (!resultat['status']) {
-        setState(() {
-          char = false;
-        });
-        message(context, "Heure disponible", Color.fromARGB(255, 0, 140, 255));
-        Navigator.of(context).pop();
+      if (resultat['status'] == false) {
+        char = false;
+
+        message(context, "${resultat['message']}",
+            Color.fromARGB(255, 0, 140, 255));
+
         // ignore: use_build_context_synchronously
         DateTime convert = DateTime.parse(today.toString().split(" ")[0]);
         String Madate = DateFormat.yMMMMEEEEd('fr_FT').format(convert);
@@ -190,22 +198,23 @@ class _prise_rdvState extends State<prise_rdv> {
                             ),
                             onPressed: () {
                               print("object");
-                              setState(() {
-                                loading = !loading;
-                              });
+
+                              // setState(() {
+                              //   loading = !loading;
+                              // });
 
                               showDialog(
                                   barrierDismissible: false,
                                   context: context,
                                   builder: (context) {
-                                    return Center(
+                                    return const Center(
                                       child: SpinKitCircle(
                                         color: Colors.black,
                                       ),
                                     );
                                   });
 
-                              Reserver();
+                              reserver();
                             },
                             child: Mytext("Valider", 15, Colors.white))
                       ],
@@ -251,25 +260,25 @@ class _prise_rdvState extends State<prise_rdv> {
                                 children: [
                                   NewBold("${Liste_Service['libelle']}", 20,
                                       Colors.black),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: Row(
-                                      children: [
-                                        for (var i = 0;
-                                            i < Liste_Service['moyenne'];
-                                            i++)
-                                          Icon(
-                                            Icons.star,
-                                            size: 20,
-                                            color: Colors.black,
-                                          )
-                                      ],
-                                    ),
-                                  ),
-                                  Mytext(
-                                      "${Liste_Service['moyenne']} (${Liste_Service['notes'].toString().length})",
-                                      15,
-                                      Color.fromARGB(96, 59, 57, 57))
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(right: 20),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       for (var i = 0;
+                                  //           i < Liste_Service['moyenne'];
+                                  //           i++)
+                                  //         Icon(
+                                  //           Icons.star,
+                                  //           size: 20,
+                                  //           color: Colors.black,
+                                  //         )
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // Mytext(
+                                  //     "${Liste_Service['moyenne']} (${Liste_Service['notes'].toString().length})",
+                                  //     15,
+                                  //     Color.fromARGB(96, 59, 57, 57))
                                 ],
                               ),
                             ]),
@@ -419,7 +428,10 @@ class _prise_rdvState extends State<prise_rdv> {
               });
         }
       } else {
-        message(context, 'Heure  déja pris par un autre', Colors.red);
+        setState(() {
+          char = !char;
+        });
+        message(context, '$resultat', Colors.red);
       }
     } catch (e) {
       print("Erreur lors de la réservation: ${e}");
@@ -496,7 +508,9 @@ class _prise_rdvState extends State<prise_rdv> {
           } else {
             return Scaffold(
               backgroundColor: Colors.white,
-              appBar: AppBar(),
+              appBar: AppBar(
+                actions: [char == true ? SpinKitWave(color: Colors.black,size: 20,) : Text("")],
+              ),
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -538,18 +552,9 @@ class _prise_rdvState extends State<prise_rdv> {
                           enabledDayPredicate: (day) {
                             return day.weekday != DateTime.sunday;
                           },
-                        
-                         
                         ),
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            getServices();
-                          },
-                          child: Text("data")),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                     
                       Text.rich(TextSpan(
                           text: "La date selectionnée est ",
                           children: [
@@ -566,7 +571,7 @@ class _prise_rdvState extends State<prise_rdv> {
                                 style: GoogleFonts.openSans(
                                     fontSize: 15, fontWeight: FontWeight.bold))
                           ])),
-                      Text("$char"),
+                      // Text("$char"),
                       Column(
                         children: [
                           for (var i = 8; i <= 22; i += duree)
@@ -584,56 +589,46 @@ class _prise_rdvState extends State<prise_rdv> {
                                       .add(const Duration(minutes: 20))
                                       .isBefore(DateTime(today.year,
                                           today.month, today.day, i, j)))
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedTime = DateTime(today.year,
-                                          today.month, today.day, i, j);
-                                      print(
-                                          "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}");
-                                      //  monheure =
-                                      //       "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}";
-                                      heure =
-                                          "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}";
-                                    });
+                                Card(
+                                  child: ListTile(
+                                    onTap: () async {
+                                      setState(() {
+                                        selectedTime = DateTime(today.year,
+                                            today.month, today.day, i, j);
+                                        print(
+                                            "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}");
+                                        //  monheure =
+                                        //       "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}";
+                                        heure =
+                                            "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}";
+                                      });
+                                      setState(() {
+                                        char = !char;
+                                      });
+                                      if (char==true) {
+                                            await verificationReservation();
+                                      }
+                                  
 
-                                    setState(() {
-                                      char = !char; // Toggle the value of char
-                                    });
-
-                                    if (char = true) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return SpinKitCircle(
-                                            color: Colors.black,
-                                          );
-                                        },
-                                      );
-                                    } else {}
-
-                                    Verification(
+                                      // verificationReservationReservation(
+                                      //   "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
+                                      //   "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}",
+                                      // );
+                                    },
+                                    leading: FaIcon(FontAwesomeIcons.clock),
+                                    trailing: FaIcon(
+                                      FontAwesomeIcons.circleCheck,
+                                      color: Colors.green,
+                                    ),
+                                    title: Text(
                                       "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
-                                      "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}",
-                                    );
-                                  },
-                                  child: Card(
-                                    child: ListTile(
-                                      leading: FaIcon(FontAwesomeIcons.clock),
-                                      trailing: FaIcon(
-                                        FontAwesomeIcons.circleCheck,
-                                        color: Colors.green,
-                                      ),
-                                      title: Text(
-                                        "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
-                                        style: GoogleFonts.openSans(
-                                            color: Colors.black, fontSize: 20),
-                                        textAlign: TextAlign.center,
-                                      ),
+                                      style: GoogleFonts.openSans(
+                                          color: Colors.black, fontSize: 20),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
-                          Text("$TrueTimeDate")
+                          // Text("$TrueTimeDate")
                         ],
                       )
                     ],

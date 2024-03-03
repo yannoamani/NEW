@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -194,11 +195,11 @@ Widget texte(String texte) {
 
 // Cette fonction concerne mon Url
 String monurl(String endpoint) {
-  return 'http://192.168.1.4:6060/api/$endpoint';
+  return 'http://192.168.1.2:6060/api/$endpoint';
 }
 
 String ImgDB(String endpoint) {
-  return 'http://192.168.1.4:6060/$endpoint';
+  return 'http://192.168.1.2:6060/$endpoint';
 }
 
 // Cette fonction represente My header
@@ -373,10 +374,20 @@ gridmoncompteRes(
 ) {
   return Container(
     padding: const EdgeInsets.all(1),
-    color: Colors.grey[300],
+   decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5), // Couleur de l'ombre
+            spreadRadius: 5, // Étendue de l'ombre
+            blurRadius: 7, // Flou de l'ombre
+            offset: Offset(0, 3), // Décalage de l'ombre
+          ),
+        ],
+        borderRadius: BorderRadius.circular(10)),
     child: Column(
       children: [
-        Titre(libelle, 17, Colors.blue),
+        Titre(libelle, 17, Colors.black),
         SizedBox(
           height: 10,
         ),
@@ -385,7 +396,7 @@ gridmoncompteRes(
           child: Icon(
             icon,
             color: Colors.grey,
-            size: 50,
+            size: 90,
           ),
         )
       ],
@@ -395,11 +406,24 @@ gridmoncompteRes(
 
 gridmoncompte(String libelle, IconData icon) {
   return Container(
+     decoration: BoxDecoration(
+                          color: Colors.white,
+                          
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey
+                                  .withOpacity(0.5), // Couleur de l'ombre
+                              spreadRadius: 5, // Étendue de l'ombre
+                              blurRadius: 7, // Flou de l'ombre
+                              offset: Offset(0, 3), // Décalage de l'ombre
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(10)),
     padding: const EdgeInsets.all(8),
-    color: Colors.grey[300],
+ 
     child: Column(
       children: [
-        Titre(libelle, 17, Colors.blue),
+        Titre(libelle, 17, Colors.black),
         Icon(
           icon,
           color: Colors.grey,
@@ -529,7 +553,7 @@ message(BuildContext context, String libelle, Color couleur) {
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: Duration(milliseconds: 900),
       backgroundColor: couleur,
-      content: Titre(libelle, 15, Colors.white)));
+      content: NewBold(libelle, 15, Colors.white)));
 }
 
 // pour mon compte()
@@ -719,108 +743,7 @@ Widget Firs_page(BuildContext context) {
   );
 }
 
-// ListView.separated(
-//               scrollDirection: Axis.horizontal,
-//               itemBuilder: (context, index) {
-//                 final info = donne[index];
-//                 var photos;
-//                 var iden;
 
-//                 for (var element in info['photos']) {
-//                   iden = element['id'];
-//                   photos = element['path'];
-//                   print(photos);
-//                 }
-
-//                 return GestureDetector(
-//                   child:Firs_page(),
-//                   //  article(
-//                   //     "${donne[index]['libelle']}",
-//                   //     photos == null
-//                   //         ? "http://192.168.1.16:8000/public/image/17062024521686638396736.jfif"
-//                   //         : "http://192.168.1.16:8000/public/image/$photos",
-//                   //     "${info['tarif']}"),
-//                   onTap: () async {
-//                     id = donne[index]['id'];
-//                     final prefs = await SharedPreferences.getInstance();
-//                     setState(() {
-//                       prefs.setInt('id_service', id);
-//                     });
-//                     print(id);
-//                     Navigator.of(context)
-//                         .push(MaterialPageRoute(builder: (context) {
-//                       return detail_service();
-//                     }));
-//                   },
-//                 );
-//               },
-//               separatorBuilder: (context, _) => SizedBox(width: 10),
-//               itemCount: donne.length),
-
-// GridView.builder(
-//   shrinkWrap: true,
-//   physics: const NeverScrollableScrollPhysics(),
-//   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//     crossAxisCount: 2,
-//     crossAxisSpacing: 10,
-//     mainAxisSpacing: 10,
-//   ),
-//   itemCount: 4,
-//   itemBuilder: (context, index) {
-//     return Column(
-//       children: [
-//         Container(
-//           child: Image.asset("assets/connexion.jpg"),
-
-//         ),
-//         texte("Je suis")
-//       ],
-//     );
-//   },
-// ),
-
-// moncontainer('Salut $nom !', () {
-//   get();
-// }),
-// const SizedBox(height: 10),
-// Container(
-//   height: 35,
-//   child: ListView.builder(
-//     scrollDirection: Axis.horizontal,
-//     itemCount: donne.length,
-//     itemBuilder: (context, index) {
-//       return defilement('${donne[index]['libelle']}', () {
-//         print(donne[index]['id']);
-//       });
-//     },
-//   ),
-// ),
-
-// Row(
-//   children: [
-//     Text(
-//       "Recommandé",
-//       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//     ),
-//     Spacer(),
-//     TextButton(
-//       onPressed: () {},
-//       child: const Text(
-//         "Voir plus",
-//         style: TextStyle(color: Colors.blue, fontSize: 15),
-//       ),
-//     )
-//   ],
-// ),
-
-// const Row(
-//   children: [
-//     Text(
-//       "Explorer les articles",
-//       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//     ),
-//   ],
-// ),
 
 Widget cards(String indice, String taille, String image) {
   return Card(
@@ -954,6 +877,45 @@ Widget VraiInput( TextEditingController _controll, String Libelle,IconData Icon 
         child: FaIcon(
           Icon,
           color: Color.fromARGB(255, 86, 86, 86),
+        ),
+      ),
+    ),
+  );
+}
+
+Card cardselection(
+    double large, IconData icon, String texte,String indice, Color couleur, double size) {
+  return Card(
+    elevation: 3,
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10)
+      ),
+     height: 200,
+      width: (large / 2 - 20),
+      
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: couleur,
+              child:  NewBold(indice, 15, Colors.white)
+            ),
+            SizedBox(height: 5,),
+            Text(
+              texte,
+              textAlign: TextAlign.center,
+              style:  GoogleFonts.openSans(
+                 color: Colors.black,
+                 
+                fontSize: 15,
+              ),
+            ),
+          ],
         ),
       ),
     ),
