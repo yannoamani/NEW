@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:gestion_salon_coiffure/Info_reservation/mes_reservation.dart';
 import 'package:gestion_salon_coiffure/acceuil/Update_users.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
 import 'package:gestion_salon_coiffure/modules/login_mogule/login_page.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/AllCoupons.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/promotion_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -131,12 +134,20 @@ class _CompteState extends State<Compte> {
   }
 
   int? recup;
+  List mesCoupons = [];
+  Promotion_provider getAllCoupons = Promotion_provider();
+  Future<void> getCoupons() async {
+    getAllCoupons.getCAllCoupons().then((value) => setState(() {
+          mesCoupons = value;
+        }));
+  }
 
   @override
   void initState() {
     yanno();
     ReservationAvenir();
-    GetService();
+   
+    getCoupons();
     super.initState();
   }
 
@@ -168,11 +179,7 @@ class _CompteState extends State<Compte> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // ElevatedButton(
-                          //     onPressed: () {
-                          //       yanno();
-                          //     },
-                          //     child: Text("$token")),
+                         
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Container(
@@ -244,6 +251,14 @@ class _CompteState extends State<Compte> {
                                   child: gridmoncompte(
                                       "Mes notes", FontAwesomeIcons.chartLine),
                                 ),
+                             if (IdRole == 2)   GestureDetector(
+                                child: gridmoncompteRes(
+                                    "Coupons", FontAwesomeIcons.ticket, "${mesCoupons.length}"),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => allCOupons())),
+                              ),
                               GestureDetector(
                                 onTap: () {
                                   showCupertinoDialog(
@@ -287,7 +302,7 @@ class _CompteState extends State<Compte> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                          Login_page()),
+                                                            Login_page()),
                                                     (route) =>
                                                         false, // Utilisez cette fonction pour supprimer toutes les pages jusqu'à la nouvelle page
                                                   );

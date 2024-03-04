@@ -61,8 +61,6 @@ class _Home_AdminState extends State<Home_Admin> {
               ),
               label: 'Dashboard',
             ),
-          
-           
             NavigationDestination(
                 icon: FaIcon(
                   FontAwesomeIcons.history,
@@ -99,7 +97,7 @@ Widget navig(int index) {
       return const firstPage();
     case 1:
       return historique();
-    
+
     case 2:
       return Compte();
 
@@ -161,12 +159,24 @@ class _firstPageState extends State<firstPage> {
     });
   }
 
+  String? nom = '';
+  String? email = '';
+  Future getPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nom = prefs.getString('name');
+      email = prefs.getString("email");
+    });
+    print("$nom");
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     mesReservationPourAjourdui();
     mesReservationsAvenir();
     mesReservationValider();
+    getPrefs();
     super.initState();
   }
 
@@ -213,10 +223,9 @@ class _firstPageState extends State<firstPage> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-              mesReservationPourAjourdui();
+            mesReservationPourAjourdui();
             mesReservationsAvenir();
             mesReservationValider();
-            
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -225,22 +234,19 @@ class _firstPageState extends State<firstPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                
+                 
                   Container(
                     width: double.infinity,
-                   
                     decoration: BoxDecoration(
-                       color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10)
-                    ),
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          NewBold(
-                              'Anon Amani Beada Yann Clarance', 15, Colors.white),
+                          NewBold('Bienvenue $nom', 15, Colors.white),
                           SizedBox(
                             height: 5,
                           ),
@@ -248,11 +254,11 @@ class _firstPageState extends State<firstPage> {
                           SizedBox(
                             height: 5,
                           ),
-                          NewText('AmaniYann500@gmail.com', 15, Colors.white),
+                         
                           SizedBox(
                             height: 5,
                           ),
-                          NewText('08125403', 15, Colors.white),
+                          NewText('$email', 15, Colors.white),
                         ],
                       ),
                     ),
@@ -264,9 +270,9 @@ class _firstPageState extends State<firstPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: (){
-                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ReservationEnCours()));
-
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ReservationEnCours()));
                         },
                         child: cardselection(
                             MediaQuery.of(context).size.width,
@@ -277,10 +283,9 @@ class _firstPageState extends State<firstPage> {
                             15),
                       ),
                       GestureDetector(
-                        onTap: (){
-                           Navigator.of(context).push(MaterialPageRoute(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ReservationTraite()));
-                          
                         },
                         child: cardselection(
                             MediaQuery.of(context).size.width,
@@ -290,18 +295,15 @@ class _firstPageState extends State<firstPage> {
                             Colors.green,
                             15),
                       ),
-                     
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      
-                       GestureDetector(
-                        onTap: (){
-                           Navigator.of(context).push(MaterialPageRoute(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ReservationProchain()));
-
                         },
                         child: cardselection(
                             MediaQuery.of(context).size.width,
@@ -311,6 +313,21 @@ class _firstPageState extends State<firstPage> {
                             Colors.orange,
                             15),
                       ),
+                      //  GestureDetector(
+                      //   onTap: (){
+                      //      Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) => historique()));
+
+                      //   },
+                      //   child: cardselection(
+                      //       MediaQuery.of(context).size.width,
+                      //       Icons.padding,
+                      //       "Historiques",
+                      //       '${mesReservationAvenir.length}',
+                      //       Colors.red,
+                      //       15),
+
+                      // ),
                     ],
                   )
                 ],

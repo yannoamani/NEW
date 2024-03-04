@@ -21,7 +21,7 @@ class _ReservationTraiteState extends State<ReservationTraite> {
   Future<void> GetReservation() async {
     final prefs = await SharedPreferences.getInstance();
 
-    var url = monurl('reservationOperateur');
+    var url = monurl('reservationClientValide');
     final uri = Uri.parse(url);
     final response =
         await http.get(uri, headers: header('${prefs.getString('token')}'));
@@ -58,18 +58,18 @@ class _ReservationTraiteState extends State<ReservationTraite> {
             ),
           ),
           SliverList.separated(
-              itemCount: 15,
+              itemCount: MesReservations.length,
               itemBuilder: (context, index) {
-                // final resultats = MesReservations[index];
-                // final nom = resultats['user']['nom'];
-                // final prenom = resultats['user']['prenom'];
-                // String date = resultats['date'];
-                // String heure = resultats['heure'];
-                final date = "2024-02-01";
-                final heure = "13:00";
-                final nom = "Anon";
-                final prenom = "Amani Beda Yann ";
-                final status = 'Valider';
+                final resultats = MesReservations[index];
+                final nom = resultats['user']['nom'];
+                final prenom = resultats['user']['prenom'];
+                String date = resultats['date'];
+                String heure = resultats['heure'];
+                // final date = "2024-02-01";
+                // final heure = "13:00";
+                // final nom = "Anon";
+                // final prenom = "Amani Beda Yann ";
+                final status = resultats['status'];
                 DateTime Convert = DateTime.parse(date);
                 String NewDate = DateFormat.yMMMEd('fr_FR').format(Convert);
                 return ListTile(
@@ -89,115 +89,117 @@ class _ReservationTraiteState extends State<ReservationTraite> {
                               padding: const EdgeInsets.only(top: 0, left: 0),
                               child: Padding(
                                 padding: const EdgeInsets.all(0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 200,
-                                      // width: dou,
-                                      child: Image.asset(
-                                        'assets/pngwing.com.png',
-                                        height: double.infinity,
-                                        width: double.infinity,
-                                        fit: BoxFit.contain,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 200,
+                                        // width: dou,
+                                        child: Image.asset(
+                                          'assets/pngwing.com.png',
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Column(
-                                      
-                                        children: [
-                                          Card(
-                                            color: status == 'Attente'
-                                                ? Colors.orange
-                                                : Colors.green,
-                                            child: ListTile(
-                                              leading: status == 'Attente'
-                                                  ? FaIcon(
-                                                      FontAwesomeIcons.xmark,
-                                                      color: Colors.white,
-                                                    )
-                                                  : FaIcon(FontAwesomeIcons
-                                                      .circleCheck,color: Colors.white,),
-                                              title: Center(
-                                                  child: NewBold('$status', 25,
-                                                      Colors.white)),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Column(
+                                        
+                                          children: [
+                                            Card(
+                                              color: status == 'En Attente'
+                                                  ? Colors.orange
+                                                  : Colors.green,
+                                              child: ListTile(
+                                                leading: status == 'En Attente'
+                                                    ? FaIcon(
+                                                        FontAwesomeIcons.xmark,
+                                                        color: Colors.white,
+                                                      )
+                                                    : FaIcon(FontAwesomeIcons
+                                                        .circleCheck,color: Colors.white,),
+                                                title: Center(
+                                                    child: NewBold('$status', 15,
+                                                        Colors.white)),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          Center(
-                                            child: Titre(
-                                                'Informations sur le client',
-                                                20,
-                                                Colors.black),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          ListTile(
-                                            leading:
-                                                FaIcon(FontAwesomeIcons.user),
-                                            title: NewText(
-                                                '$nom', 15, Colors.black),
-                                            subtitle: NewText(
-                                                '$prenom', 15, Colors.black),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            leading: FaIcon(
-                                                FontAwesomeIcons.calendar),
-                                            title: NewText(
-                                                '$NewDate', 15, Colors.black),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            leading:
-                                                FaIcon(FontAwesomeIcons.clock),
-                                            title: NewText(
-                                                '$heure', 15, Colors.black),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            leading: FaIcon(
-                                                FontAwesomeIcons.hourglass),
-                                            title:
-                                                NewText('2h', 15, Colors.black),
-                                          ),
-                                          Divider(),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Center(
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            Center(
                                               child: Titre(
-                                                  'Informations sur la reservaton',
+                                                  'Informations sur le client',
                                                   20,
-                                                  Colors.black)),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Divider(),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              NewBold(
-                                                  "Total", 20, Colors.black),
-                                              NewBold(
-                                                  "20000FCFA", 20, Colors.red)
-                                            ],
-                                          ),
-                                          Divider(),
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                                  Colors.black),
+                                            ),
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            ListTile(
+                                              leading:
+                                                  FaIcon(FontAwesomeIcons.user),
+                                              title: NewText(
+                                                  '$nom', 15, Colors.black),
+                                              subtitle: NewText(
+                                                  '$prenom', 15, Colors.black),
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: FaIcon(
+                                                  FontAwesomeIcons.calendar),
+                                              title: NewText(
+                                                  '$NewDate', 15, Colors.black),
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading:
+                                                  FaIcon(FontAwesomeIcons.clock),
+                                              title: NewText(
+                                                  '$heure', 15, Colors.black),
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: FaIcon(
+                                                  FontAwesomeIcons.hourglass),
+                                              title:
+                                                  NewText('2h', 15, Colors.black),
+                                            ),
+                                            Divider(),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Center(
+                                                child: Titre(
+                                                    'Informations sur la reservaton',
+                                                    20,
+                                                    Colors.black)),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Divider(),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                NewBold(
+                                                    "Total", 20, Colors.black),
+                                                NewBold(
+                                                    "20000FCFA", 20, Colors.red)
+                                              ],
+                                            ),
+                                            Divider(),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

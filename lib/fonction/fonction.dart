@@ -195,11 +195,11 @@ Widget texte(String texte) {
 
 // Cette fonction concerne mon Url
 String monurl(String endpoint) {
-  return 'http://192.168.1.2:6060/api/$endpoint';
+  return 'http://192.168.1.7:6060/api/$endpoint';
 }
 
 String ImgDB(String endpoint) {
-  return 'http://192.168.1.2:6060/$endpoint';
+  return 'http://192.168.1.7:6060/$endpoint';
 }
 
 // Cette fonction represente My header
@@ -808,7 +808,7 @@ Widget ListeTiles(String indice, IconData icon) {
 Widget Mytext(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
-    style: GoogleFonts.openSans(
+    style: GoogleFonts.andadaPro(
       fontSize: Size,
       color: couleur,
     ),
@@ -818,7 +818,7 @@ Widget Mytext(String montexte, double Size, Color couleur) {
 Widget NewText(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
-    style: GoogleFonts.openSans(
+    style: GoogleFonts.andadaPro(
       fontSize: Size,
       color: couleur,
     ),
@@ -829,7 +829,7 @@ Widget NewText(String montexte, double Size, Color couleur) {
 Widget NewBold(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
-    style: GoogleFonts.openSans(
+    style: GoogleFonts.andadaPro(
         fontSize: Size, color: couleur, fontWeight: FontWeight.bold),
         // textAlign: TextAlign.center,
   );
@@ -838,7 +838,7 @@ Widget NewBold(String montexte, double Size, Color couleur) {
 Widget Titre(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
-    style: GoogleFonts.openSans(
+    style: GoogleFonts.andadaPro(
         fontSize: Size, color: couleur, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
   );
@@ -921,3 +921,116 @@ Card cardselection(
     ),
   );
 }
+ cardreservations(BuildContext context, String days, 
+ String number, 
+ String mounth,
+  String libelleService,
+  String heure,
+  String prix,
+  String statut
+  
+  ){
+  return   Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(
+                                                      0.5), // Couleur de l'ombre
+                                                  spreadRadius:
+                                                      1, // Étendue de l'ombre
+                                                  blurRadius:
+                                                      7, // Flou de l'ombre
+                                                  offset: Offset(0,
+                                                      3), // Décalage de l'ombre
+                                                ),
+                                              ],
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.8,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Center(
+                                                  child: Column(
+                                                    children: [
+                                                      Mytext("$days", 20,
+                                                          Colors.white),
+                                                      Titre("$number", 25,
+                                                          Colors.white),
+                                                      Mytext("$mounth", 20,
+                                                          Colors.white),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 40,
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      FittedBox(
+                                                        // fit: BoxFit.scaleDown,
+                                                        // child: Titre(
+                                                        //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
+                                                        //     15,
+                                                        //     Colors.white),
+                                                        child: Text(
+                                                          "$libelleService",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                                      Mytext(
+                                                          '$heure',
+                                                          15,
+                                                          Colors.white),
+                                                      Titre(
+                                                          '$prix FCFA',
+                                                          15,
+                                                          Colors.white),
+                                                      // SizedBox(height: 5,),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                width: 1,
+                                                                color: Colors
+                                                                    .white),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        9)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(2),
+                                                          child: Mytext(
+                                                              '$statut',
+                                                              15,
+                                                              Colors.white),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }

@@ -20,6 +20,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
   List reservationDejaPasser = [];
   List reservattionTerminer = [];
   int rating = 0;
+  bool Rating = false;
   Future<void> reservationsfinish() async {
     final prefs = await SharedPreferences.getInstance();
     final url = monurl("reservationClientValide");
@@ -135,10 +136,10 @@ class _Mes_reservationsState extends State<Mes_reservations>
             ]),
           ),
           body: RefreshIndicator(
-            onRefresh: () async{
-            await  reservationAvenir();
-               await reservationsfinish();
-             await  ReservationDejaPasser();
+            onRefresh: () async {
+              await reservationAvenir();
+              await reservationsfinish();
+              await ReservationDejaPasser();
             },
             child: TabBarView(controller: _tabController, children: [
               CustomScrollView(
@@ -148,7 +149,6 @@ class _Mes_reservationsState extends State<Mes_reservations>
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                        
                           Container(
                             decoration: BoxDecoration(
                                 color: Colors.green,
@@ -173,7 +173,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
                               ),
                             ),
                           ),
-                        const   SizedBox(
+                          const SizedBox(
                             height: 30,
                           )
                         ],
@@ -329,7 +329,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                         // isScrollControlled: true,
                                                         context: context,
                                                         builder: (context) {
-                                                          return Scaffold(
+                                                        return StatefulBuilder(builder: (context, setState) => Scaffold(
                                                             backgroundColor:
                                                                 Colors.white,
                                                             body: Center(
@@ -352,7 +352,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                                             5,
                                                                       ),
                                                                       Mytext(
-                                                                          "Votre reponse est anonyme.Elle permet à l'entrprise d'ameliorer votre expérience",
+                                                                          "Votre reponse est anonyme.Elle permet à l'entrprise d'ameliorer votre expérience$Rating",
                                                                           12,
                                                                           const Color
                                                                               .fromARGB(
@@ -374,31 +374,37 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                                             rating =
                                                                                 value;
                                                                           });
+                                                                          if (rating <
+                                                                              3) {
+                                                                           setState(() {
+                                                                              Rating = true;
+                                                                           });
+                                                                          }
                                                                           print(
-                                                                              rating);
+                                                                              Rating);
                                                                         },
                                                                       ),
                                                                       SizedBox(
                                                                         height:
                                                                             5,
                                                                       ),
+                                                                  // ignore: unrelated_type_equality_checks
+                                                                  rating<4?
                                                                       TextFormField(
-                                                                        controller:
-                                                                            _controlCommentaire,
-                                                                        maxLines:
-                                                                            2,
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          hintText:
-                                                                              'Laisse un commentaire',
-                                                                          focusedBorder: OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              borderSide: BorderSide(color: Colors.blue, width: 1)),
-                                                                          enabledBorder: OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              borderSide: BorderSide(color: Colors.grey, width: 1)),
-                                                                        ),
-                                                                      ),
+                                                                          controller:
+                                                                              _controlCommentaire,
+                                                                          maxLines:
+                                                                              2,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            hintText:
+                                                                                'Laisse un commentaire$rating',
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                            enabledBorder:
+                                                                                OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey, width: 1)),
+                                                                          ),
+                                                                        ): Text(""),
                                                                       SizedBox(
                                                                         height:
                                                                             25,
@@ -438,7 +444,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                                 ),
                                                               ),
                                                             ),
-                                                          );
+                                                          ));
                                                         });
                                                   },
                                                   title: NewBold(
@@ -525,7 +531,7 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                           FittedBox(
                                             child: Text(
                                               "${result['service']['libelle']} ",
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black),

@@ -76,7 +76,7 @@ class _prise_rdvState extends State<prise_rdv> {
         TrueTimeDate.add(dateInfo);
       });
     }
-    print(TrueTimeDate);
+    print(response.body);
   }
 
   Future<dynamic> reserver() async {
@@ -476,19 +476,115 @@ class _prise_rdvState extends State<prise_rdv> {
   }
 
   Future<String> Attendre() async {
-    Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     return '0';
+  }
+  
+bool isAnyHourAvailableForToday() {
+    DateTime now = DateTime.now();
+
+    // Logique pour vérifier si des heures sont disponibles aujourd'hui
+    // Par exemple, si des heures sont disponibles entre 8h et 22h et aucune réservation pour ces heures
+    for (var i = 8; i <= 22; i += duree) {
+      for (var j = 0; j < 60; j += 60) {
+        DateTime currentTime = DateTime(now.year, now.month, now.day, i, j);
+
+        if (DateTime.now()
+                .isBefore(DateTime(today.year, today.month, today.day, i, j)) &&
+            !TrueTimeDate.any((dateInfo) =>
+                isSameDay(DateTime(today.year, today.month, today.day, i, j),
+                    dateInfo['date']) &&
+                dateInfo['heure'] == TimeOfDay(hour: i, minute: j)) &&
+            DateTime.now()
+                .add(const Duration(minutes: 20))
+                .isBefore(DateTime(today.year, today.month, today.day, i, j)))
+                {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+List<Widget> generateCards() {
+    List<Widget> cards = [];
+    bool hasAtLeastOneCard = false;
+
+    for (var i = 8; i <= 22; i += duree) {
+      for (var j = 0; j < 60; j += 60) {
+        if (DateTime.now()
+                .isBefore(DateTime(today.year, today.month, today.day, i, j)) &&
+            !TrueTimeDate.any((dateInfo) =>
+                isSameDay(DateTime(today.year, today.month, today.day, i, j),
+                    dateInfo['date']) &&
+                dateInfo['heure'] == TimeOfDay(hour: i, minute: j)) &&
+            DateTime.now()
+                .add(const Duration(minutes: 20))
+                .isBefore(DateTime(today.year, today.month, today.day, i, j))) {
+          // Une heure est disponible
+          hasAtLeastOneCard = true;
+          cards.add(
+            Card(
+              shadowColor: Colors.black,
+              child: ListTile(
+                selectedColor: Colors.blue,
+                splashColor: Colors.amber,
+                onTap: () async {
+                  setState(() {
+                    selectedTime =
+                        DateTime(today.year, today.month, today.day, i, j);
+                    print(
+                        "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}");
+                    heure =
+                        "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}";
+                  });
+                  setState(() {
+                    char = !char;
+                  });
+                  if (char == true) {
+                    await verificationReservation();
+                    if (!isAnyHourAvailableForToday()) {
+                      // Aucune heure disponible pour ce service
+                      print("Aucune heure disponible pour ce service");
+                    }
+                  }
+                },
+                title: Text(
+                  "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
+                  style:
+                      GoogleFonts.openSans(color: Colors.black, fontSize: 20),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    }
+
+    // Si aucune Card n'a été générée, ajouter le message approprié
+    if (!hasAtLeastOneCard) {
+      cards.add(
+        Text(
+          "Aucune heure spécifique disponible pour ce service",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    return cards;
   }
 
   DateTime today = DateTime.now();
   @override
   void initState() {
-    super.initState();
-    // Mes_Services();
-    // GetReservation();
     Attendre();
     getServices();
+    Mes_Services();
+    // GetReservation();
+    super.initState();
   }
 
   @override
@@ -496,8 +592,9 @@ class _prise_rdvState extends State<prise_rdv> {
     return FutureBuilder(
         future: Attendre(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            Scaffold(
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              Liste_Service.isEmpty) {
+            return Scaffold(
               body: Center(
                 child: SpinKitCircle(color: Colors.black),
               ),
@@ -509,19 +606,53 @@ class _prise_rdvState extends State<prise_rdv> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                actions: [char == true ? SpinKitWave(color: Colors.black,size: 20,) : Text("")],
+                title: FittedBox(child: Text(
+                        " Selectionnez l'heure",
+                        textAlign: TextAlign.start,
+                        style: GoogleFonts.andadaPro(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),),
+                actions: [
+                  char == true
+                      ? SpinKitWave(
+                          color: Colors.black,
+                          size: 20,
+                        )
+                      : Text("")
+                ],
               ),
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        " Faire une reservation",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.openSans(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            child: ClipOval(
+                              child: Image.network(
+                                ImgDB(
+                                    "public/image/${Liste_Service['photos'][0]['path']}"),
+                                fit: BoxFit.cover,
+                                height: double.infinity,
+                                width: double.infinity,
+                                // Assure que l'image couvre complètement le cercle
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Titre("${Liste_Service['libelle']}", 20, Colors.black)
+                        ],
                       ),
+                      SizedBox(
+                        height: 15,
+                      ),
+
+                      
                       SizedBox(
                         height: 15,
                       ),
@@ -554,26 +685,23 @@ class _prise_rdvState extends State<prise_rdv> {
                           },
                         ),
                       ),
-                     
-                      Text.rich(TextSpan(
-                          text: "La date selectionnée est ",
-                          children: [
-                            TextSpan(
-                                text: '${today.toString().split(" ")[0]}',
-                                style: GoogleFonts.openSans(
-                                    fontSize: 15, fontWeight: FontWeight.bold))
-                          ])),
-                      Text.rich(TextSpan(
-                          text: "La date selectionnée est ",
-                          children: [
-                            TextSpan(
-                                text: '$heure',
-                                style: GoogleFonts.openSans(
-                                    fontSize: 15, fontWeight: FontWeight.bold))
-                          ])),
+
                       // Text("$char"),
+
                       Column(
                         children: [
+                      if (!isAnyHourAvailableForToday())
+                            Center(
+                              child: Container(
+                                color: Colors.red,
+                                child:  Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child:  Titre("OOPS AUCUNE HEURE DISPONIBLE POUR CE SERVICE", 20, Colors.white)
+                                ),
+                              ),
+                            )
+                          else
+         
                           for (var i = 8; i <= 22; i += duree)
                             for (var j = 0; j < 60; j += 60)
                               if (DateTime.now().isBefore(DateTime(today.year,
@@ -590,7 +718,10 @@ class _prise_rdvState extends State<prise_rdv> {
                                       .isBefore(DateTime(today.year,
                                           today.month, today.day, i, j)))
                                 Card(
+                                  shadowColor: Colors.black,
                                   child: ListTile(
+                                    selectedColor: Colors.blue,
+                                    splashColor: Colors.amber,
                                     onTap: () async {
                                       setState(() {
                                         selectedTime = DateTime(today.year,
@@ -605,35 +736,38 @@ class _prise_rdvState extends State<prise_rdv> {
                                       setState(() {
                                         char = !char;
                                       });
-                                      if (char==true) {
-                                            await verificationReservation();
+                                      if (char == true) {
+                                        await verificationReservation();
                                       }
-                                  
 
                                       // verificationReservationReservation(
                                       //   "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
                                       //   "${today.year.toString().split(" ")[0]}-${today.month.toString().split(" ")[0]}-${controller.today.day.toString().split(" ")[0]}",
                                       // );
                                     },
-                                    leading: FaIcon(FontAwesomeIcons.clock),
-                                    trailing: FaIcon(
-                                      FontAwesomeIcons.circleCheck,
-                                      color: Colors.green,
-                                    ),
+                                    // leading: FaIcon(FontAwesomeIcons.clock),
+                                    // trailing: FaIcon(
+                                    //   FontAwesomeIcons.circleCheck,
+                                    //   color: Colors.green,
+                                    // ),
                                     title: Text(
                                       "${i.toString().padLeft(2, "0")}:${j.toString().padLeft(2, "0")}",
                                       style: GoogleFonts.openSans(
                                           color: Colors.black, fontSize: 20),
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.start,
                                     ),
                                   ),
                                 ),
+
                           // Text("$TrueTimeDate")
                         ],
-                      )
+                      ),
+                      
+                      
                     ],
                   ),
                 ),
+
               ),
               // floatingActionButton: FloatingActionButton(
               //   backgroundColor: Colors.white,
@@ -787,3 +921,4 @@ class _prise_rdvState extends State<prise_rdv> {
 void main() async {
   runApp(prise_rdv());
 }
+

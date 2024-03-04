@@ -108,16 +108,18 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
             ),
           ),
           SliverList.separated(
-              itemCount: 20,
+              itemCount: reservationToday.length,
               itemBuilder: (context, index) {
-                // final resultats = reservationToday[index];
-                // final nom = resultats['user']['nom'];
-                // final prenom = resultats['user']['prenom'];
-                final nom = 'Anon';
-                final prenom = 'Amani Beada yann Clarance';
-                final status = "Attente";
-
-                String date = "2024-03-02";
+                final resultats = reservationToday[index];
+                final nom = resultats['user']['nom'];
+                final prenom = resultats['user']['prenom'];
+                final montant = resultats['montant'];
+                // final nom = 'Anon';
+                // final prenom = 'Amani Beada yann Clarance';
+                final status = resultats['status'];
+                final duree = resultats['service']["duree"];
+                final heure = resultats['heure'];
+                String date = resultats['date'];
                 DateTime Convert = DateTime.parse(date);
                 String NewDate = DateFormat.yMMMEd('fr_FR').format(Convert);
                 return ListTile(
@@ -221,10 +223,20 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                                         height: 15,
                                       ),
                                       Card(
-                                        color:status=='Attente'? Colors.orange:Colors.green,
+                                        color: status == 'Attente'
+                                            ? Colors.orange
+                                            : Colors.green,
                                         child: ListTile(
-                                          leading: status=='Attente'?FaIcon(FontAwesomeIcons.xmark,color: Colors.white,):FaIcon(FontAwesomeIcons.circleCheck),
-                                          title: Center(child: NewBold('$status', 25, Colors.white)),
+                                          leading: status == 'Attente'
+                                              ? FaIcon(
+                                                  FontAwesomeIcons.xmark,
+                                                  color: Colors.white,
+                                                )
+                                              : FaIcon(
+                                                  FontAwesomeIcons.circleCheck),
+                                          title: Center(
+                                              child: NewBold(
+                                                  '$status', 15, Colors.white)),
                                         ),
                                       ),
                                       SizedBox(
@@ -240,55 +252,58 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                                         height: 5,
                                       ),
                                       ListTile(
-                                        leading:
-                                            FaIcon(FontAwesomeIcons.user),
-                                        title: NewText(
-                                            '$nom ', 15, Colors.black),
+                                        leading: FaIcon(FontAwesomeIcons.user),
+                                        title:
+                                            NewText('$nom ', 15, Colors.black),
                                         subtitle: NewText(
                                             '$prenom ', 15, Colors.black),
                                       ),
                                       Divider(),
                                       ListTile(
-                                        leading: FaIcon(
-                                            FontAwesomeIcons.calendar),
+                                        leading:
+                                            FaIcon(FontAwesomeIcons.calendar),
                                         title: NewText(
                                             '$NewDate', 20, Colors.black),
                                       ),
                                       Divider(),
                                       ListTile(
-                                        leading: FaIcon(
-                                            FontAwesomeIcons.clock),
+                                        leading: FaIcon(FontAwesomeIcons.clock),
                                         title:
-                                            NewText('12:00', 20, Colors.black),
+                                            NewText('$heure', 20, Colors.black),
                                       ),
                                       Divider(),
                                       ListTile(
-                                        leading: FaIcon(
-                                            FontAwesomeIcons.hourglass),
-                                        title:
-                                            NewText('4h', 20, Colors.black),
+                                        leading:
+                                            FaIcon(FontAwesomeIcons.hourglass),
+                                        title: NewText(
+                                            '$duree h', 20, Colors.black),
                                       ),
                                       Divider(),
-                                      SizedBox(height: 15,),
-                                      Center(child: NewBold("Informations sur la reservation", 20, Colors.black)),
-                                      SizedBox(height: 10,),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Center(
+                                          child: NewBold(
+                                              "Informations sur la reservation",
+                                              20,
+                                              Colors.black)),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Divider(),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            NewText("Total", 20,  Colors.black),
-                                            NewBold("30000FCFA", 23,  Colors.red),
-                                        
-                                        
+                                            NewText("Total", 18, Colors.black),
+                                            NewBold(
+                                                "$montant FCFA", 23, Colors.red),
                                           ],
                                         ),
-                                      
                                       ),
                                       Divider()
-
-
                                     ],
                                   ),
                                 ),

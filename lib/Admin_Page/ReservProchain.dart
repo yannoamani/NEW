@@ -20,7 +20,7 @@ class _ReservationProchainState extends State<ReservationProchain> {
   Future<void> reservationProchaine() async {
     final prefs = await SharedPreferences.getInstance();
 
-    var url = monurl('reservations');
+    var url = monurl('reservationAvenir');
     final uri = Uri.parse(url);
     final response =
         await http.get(uri, headers: header('${prefs.getString('token')}'));
@@ -41,7 +41,7 @@ class _ReservationProchainState extends State<ReservationProchain> {
           SliverAppBar(
             // backgroundColor: Colors.blue,
             centerTitle: true,
-            title:   Titre('Reservation Futures', 25, Colors.black),),
+            title:   Titre('Reservation à venirs', 25, Colors.black),),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -51,7 +51,7 @@ class _ReservationProchainState extends State<ReservationProchain> {
             ),
           ),
           SliverList.separated(
-              itemCount: 10,
+              itemCount: 2,
               itemBuilder: (context, index) {
                 String date = '2024-04-20';
                 DateTime Convert = DateTime.parse(date);

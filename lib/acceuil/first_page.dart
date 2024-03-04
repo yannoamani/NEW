@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestion_salon_coiffure/Info_reservation/mes_reservation.dart';
@@ -9,8 +10,8 @@ import 'package:gestion_salon_coiffure/acceuil/recherche.dart';
 import 'package:gestion_salon_coiffure/constants.dart';
 import 'package:gestion_salon_coiffure/module_reservation/Update_Reservation.dart';
 import 'package:gestion_salon_coiffure/modules/login_mogule/login_page.dart';
-import 'package:gestion_salon_coiffure/promotions/promotion_page.dart';
-import 'package:gestion_salon_coiffure/promotions/promotion_provider.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/promotion_page.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/promotion_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,15 +91,16 @@ class _First_pageState extends State<First_page> {
     }
   }
 
-  List mespromotions = [];
-  // Future<void> GetPromotion() async {
-  //   promotionProvider.Get_Promotion().then((value) {
-  //     return setState(() {
-  //       mespromotions = value;
-  //     });
-  //   });
-  //   // print(mespromotions);
-  // }
+  List mesCoupons = [];
+  Future<void> getcoupons() async {
+    promotionProvider.getCouponsActif().then((value) {
+      setState(() {
+        mesCoupons = value;
+      });
+      return mesCoupons;
+    });
+    print(mesCoupons);
+  }
 
   Future<void> get() async {
     final prefs = await SharedPreferences.getInstance();
@@ -123,7 +125,7 @@ class _First_pageState extends State<First_page> {
   void initState() {
     super.initState();
     get();
-    // GetPromotion();
+    getcoupons();
     ReservationAvenir();
   }
 
@@ -142,287 +144,275 @@ class _First_pageState extends State<First_page> {
               return Text(snapshot.error.toString());
             } else {
               return WillPopScope(
-                onWillPop: () async {
-                  message(context, 'Impossible de revenir', Colors.red);
-                  return false;
-                },
-                child: Scaffold(
-                  appBar: AppBar(
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Colors.grey[100],
-                    title: Text.rich(TextSpan(
-                        text: "Bonjour",
-                        style: GoogleFonts.openSans(fontSize: 15),
-                        children: [
-                          TextSpan(
-                            text: ' $nom',
-                            style: GoogleFonts.openSans(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          )
-                        ])),
-                    actions: [
-                      PopupMenuButton(
-                          itemBuilder: (BuildContext context) => [
-                                PopupMenuItem(
-                                    child: ListTile(
-                                  leading:
-                                      FaIcon(FontAwesomeIcons.rightFromBracket),
-                                  title:
-                                      NewText('Deconnexion', 15, Colors.black),
-                                  onTap: () async {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.remove('token');
-                                    prefs.remove('name');
-                                    prefs.remove('prenom');
-                                    prefs.remove('phone');
-                                    prefs.remove('email');
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                      return Login_page();
-                                    }));
-                                  },
-                                )),
-                                PopupMenuItem(
-                                    child: ListTile(
-                                  leading: FaIcon(
-                                    FontAwesomeIcons.gears,
-                                  ),
-                                  title: NewText('Setting', 15, Colors.black),
-                                )),
-                              ])
-                      // CircleAvatar(
-                      //   child: Text(
-                      //       "${nom.toString().substring(0, 2).toUpperCase()}"),
-                      // )
-                    ],
-                  ),
-                  body: RefreshIndicator(
-                    strokeWidth: 4,
-                    color: const Color(0xFF0A345F),
-                    backgroundColor: Colors.white,
-                    onRefresh: () async {
-                      await ReservationAvenir();
-                      // get();
-                    },
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
+                  onWillPop: () async {
+                    message(context, 'Impossible de revenir', Colors.red);
+                    return false;
+                  },
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          backgroundColor: Colors.grey[100],
+                          title: Text.rich(TextSpan(
+                              text: "Bonjour",
+                              style: GoogleFonts.openSans(fontSize: 15),
                               children: [
-                                Titre("Prochain rendez-vous", 18, Colors.black),
-                                Spacer(),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return Mes_reservations();
-                                      }));
-                                    },
-                                    child: Mytext('Voir plus', 15, Colors.blue))
-                              ],
-                            ),
-                            Container(
-                                height: 122,
-                                width: double.infinity,
-                                child: ListView.separated(
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(
-                                    width: 10,
+                                TextSpan(
+                                  text: ' $nom',
+                                  style: GoogleFonts.openSans(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ])),
+                          actions: [
+                            PopupMenuButton(
+                                itemBuilder: (BuildContext context) => [
+                                      PopupMenuItem(
+                                          child: ListTile(
+                                        leading: FaIcon(
+                                            FontAwesomeIcons.rightFromBracket),
+                                        title: NewText(
+                                            'Deconnexion', 15, Colors.black),
+                                        onTap: () async {
+                                          final prefs = await SharedPreferences
+                                              .getInstance();
+                                          prefs.remove('token');
+                                          prefs.remove('name');
+                                          prefs.remove('prenom');
+                                          prefs.remove('phone');
+                                          prefs.remove('email');
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return Login_page();
+                                          }));
+                                        },
+                                      )),
+                                      PopupMenuItem(
+                                          child: ListTile(
+                                        leading: FaIcon(
+                                          FontAwesomeIcons.gears,
+                                        ),
+                                        title: NewText(
+                                            'Setting', 15, Colors.black),
+                                      )),
+                                    ])
+                          ]),
+                      SliverToBoxAdapter(
+                        child: RefreshIndicator(
+                          strokeWidth: 4,
+                          color: const Color(0xFF0A345F),
+                          backgroundColor: Colors.white,
+                          onRefresh: () async {
+                            await ReservationAvenir();
+                            // get();
+                          },
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                  itemCount: Reservation_A_V.length,
-                                  itemBuilder: (context, index) {
-                                    final result = Reservation_A_V[index];
-                                    final date = result['date'];
-                                    DateTime My = DateTime.parse(date);
-                                    String Days =
-                                        DateFormat.EEEE('fr_FR').format(My);
-                                    String Mounth =
-                                        DateFormat.MMM('fr_FR').format(My);
+                                  Row(
+                                    children: [
+                                      Titre("Prochain rendez-vous", 20,
+                                          Colors.black),
+                                      Spacer(),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return Mes_reservations();
+                                            }));
+                                          },
+                                          child: Mytext(
+                                              'Voir plus', 15, Colors.blue))
+                                    ],
+                                  ),
+                                  Container(
+                                      height: 122,
+                                      width: double.infinity,
+                                      child: ListView.separated(
+                                        separatorBuilder: (context, index) =>
+                                            const SizedBox(
+                                          width: 10,
+                                        ),
+                                        itemCount: Reservation_A_V.length,
+                                        itemBuilder: (context, index) {
+                                          final result = Reservation_A_V[index];
+                                          final date = result['date'];
+                                          DateTime My = DateTime.parse(date);
+                                          String Days = DateFormat.EEEE('fr_FR')
+                                              .format(My);
+                                          String Mounth =
+                                              DateFormat.MMM('fr_FR')
+                                                  .format(My);
 
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(
-                                                  0.5), // Couleur de l'ombre
-                                              spreadRadius:
-                                                  1, // Étendue de l'ombre
-                                              blurRadius: 7, // Flou de l'ombre
-                                              offset: Offset(
-                                                  0, 3), // Décalage de l'ombre
-                                            ),
-                                          ],
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.8,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Center(
-                                              child: Column(
-                                                children: [
-                                                  Mytext("$Days", 20,
-                                                      Colors.white),
-                                                  Titre("${My.day}", 25,
-                                                      Colors.white),
-                                                  Mytext("$Mounth", 20,
-                                                      Colors.white),
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withOpacity(
+                                                        0.5), // Couleur de l'ombre
+                                                    spreadRadius:
+                                                        1, // Étendue de l'ombre
+                                                    blurRadius:
+                                                        7, // Flou de l'ombre
+                                                    offset: Offset(0,
+                                                        3), // Décalage de l'ombre
+                                                  ),
                                                 ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 40,
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 15),
+                                              child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
-                                                  FittedBox(
-                                                    // fit: BoxFit.scaleDown,
-                                                    // child: Titre(
-                                                    //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
-                                                    //     15,
-                                                    //     Colors.white),
-                                                    child: Text(
-                                                      "${result['service']['libelle']} ",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.white),
+                                                  Center(
+                                                    child: Column(
+                                                      children: [
+                                                        Mytext("$Days", 20,
+                                                            Colors.white),
+                                                        Titre("${My.day}", 25,
+                                                            Colors.white),
+                                                        Mytext("$Mounth", 20,
+                                                            Colors.white),
+                                                      ],
                                                     ),
                                                   ),
-                                                  Mytext('${result['heure']}',
-                                                      15, Colors.white),
-                                                  Titre(
-                                                      '${result['montant']} FCFA',
-                                                      15,
-                                                      Colors.white),
-                                                  // SizedBox(height: 5,),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color:
+                                                  SizedBox(
+                                                    width: 40,
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        FittedBox(
+                                                          // fit: BoxFit.scaleDown,
+                                                          // child: Titre(
+                                                          //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
+                                                          //     15,
+                                                          //     Colors.white),
+                                                          child: Text(
+                                                            "${result['service']['libelle']} ",
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                        Mytext(
+                                                            '${result['heure']}',
+                                                            15,
+                                                            Colors.white),
+                                                        Titre(
+                                                            '${result['montant']} FCFA',
+                                                            15,
+                                                            Colors.white),
+                                                        // SizedBox(height: 5,),
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  width: 1,
+                                                                  color: Colors
+                                                                      .white),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          9)),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(2),
+                                                            child: Mytext(
+                                                                '${result['status']}',
+                                                                15,
                                                                 Colors.white),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(9)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              2),
-                                                      child: Mytext(
-                                                          '${result['status']}',
-                                                          15,
-                                                          Colors.white),
+                                                          ),
+                                                        )
+                                                      ],
                                                     ),
                                                   )
                                                 ],
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  scrollDirection: Axis.horizontal,
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Titre("Les services", 18, Colors.black),
-                                Spacer(),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return UpdateReservation();
-                                      }));
-                                    },
-                                    child: Mytext('Voir plus', 15, Colors.blue))
-                              ],
-                            ),
-                            Container(
-                              height: 300,
-                              color: Colors.transparent,
-                              child: ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    final info = donne[index];
-                                    var photos;
-                                    var iden;
+                                            ),
+                                          );
+                                        },
+                                        scrollDirection: Axis.horizontal,
+                                      )),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Titre("Les services", 20, Colors.black),
+                                      Spacer(),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return UpdateReservation();
+                                            }));
+                                          },
+                                          child: Mytext(
+                                              'Voir plus', 15, Colors.blue))
+                                    ],
+                                  ),
+                                  Container(
+                                    height: 300,
+                                    color: Colors.transparent,
+                                    child: ListView.separated(
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          final info = donne[index];
+                                          var photos;
+                                          var iden;
 
-                                    for (var element in info['photos']) {
-                                      iden = element['id'];
-                                      photos = element['path'];
-                                      print(photos);
-                                    }
+                                          for (var element in info['photos']) {
+                                            iden = element['id'];
+                                            photos = element['path'];
+                                            print(photos);
+                                          }
 
-                                    return GestureDetector(
-                                      child: Container(
-                                        
-                                      
-                                        width: 300-60,
-                                        height: 300-20,
-                                        decoration: BoxDecoration(
-                                            color: Colors.transparent,
-                                            border: Border.all(
-                                                width: 1, color: Colors.black),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(9))),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 0),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 1,),
-                                              Container(
-                                                height: 200,
-                                                decoration: BoxDecoration(
-                                                    boxShadow: [
-                                                     
-                                                    ],
-                                                    color: Colors.transparent,
-                                                    border: Border(
-                                                      bottom: BorderSide(
-                                                          width: 1,
-                                                          color: Colors.black),
-                                                    )),
-                                                child: Image.network(
-                                                  ImgDB("public/image/$photos"),
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                ),
-                                              ),
-                                              Padding(
+                                          return GestureDetector(
+                                            child: Container(
+                                              width: 300 - 60,
+                                              height: 300 - 20,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.transparent,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.black),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(9))),
+                                              child: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 10),
+                                                        horizontal: 0),
                                                 child: Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -430,261 +420,246 @@ class _First_pageState extends State<First_page> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text('${info['libelle']}',
-                                                        style: GoogleFonts.openSans(color:Colors.black, fontSize: 15,
-                                                      fontWeight: FontWeight.bold
-                                                        ),
-                                                        overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines:
-                                                              1, // Set the maximum number of lines to 1,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
+                                                      height: 1,
                                                     ),
                                                     Container(
+                                                      height: 200,
                                                       decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              width: 1),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10)),
-                                                      child: Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  2.0),
-                                                          child: Titre(
-                                                              '${info['tarif']} FCFA',
-                                                              15,
-                                                              Colors.black)),
+                                                          boxShadow: [],
+                                                          color: Colors
+                                                              .transparent,
+                                                          border: Border(
+                                                            bottom: BorderSide(
+                                                                width: 1,
+                                                                color: Colors
+                                                                    .black),
+                                                          )),
+                                                      child: Image.network(
+                                                        ImgDB(
+                                                            "public/image/$photos"),
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                      ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        // Display the first six stars in grey
-                                                        for (var i = 0;
-                                                            i < 6;
-                                                            i++)
-                                                          FaIcon(
-                                                            FontAwesomeIcons
-                                                                .solidStar,
-                                                            color: Colors.amber,
-                                                            size: 15,
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 10),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 5,
                                                           ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '${info['libelle']}',
+                                                                style: GoogleFonts.openSans(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines:
+                                                                    1, // Set the maximum number of lines to 1,
+                                                              )
+                                                            ],
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                border:
+                                                                    Border.all(
+                                                                        width:
+                                                                            1),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
+                                                            child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            2.0),
+                                                                child: Titre(
+                                                                    '${info['tarif']} FCFA',
+                                                                    15,
+                                                                    Colors
+                                                                        .black)),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              // Display the first six stars in grey
+                                                              for (var i = 0;
+                                                                  i < 6;
+                                                                  i++)
+                                                                FaIcon(
+                                                                  FontAwesomeIcons
+                                                                      .solidStar,
+                                                                  color: Colors
+                                                                      .amber,
+                                                                  size: 15,
+                                                                ),
 
-                                                        // Display additional yellow stars based on the value of 'moyenne'
-                                                       
-                                                      ],
+                                                              // Display additional yellow stars based on the value of 'moyenne'
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
                                                     )
                                                   ],
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      onTap: () async {
-                                        id = donne[index]['id'];
-                                        final prefs = await SharedPreferences
-                                            .getInstance();
-                                        setState(() {
-                                          prefs.setInt('id_service', id);
-                                        });
-                                        print(id);
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return detail_service();
-                                        }));
-                                      },
-                                    );
-                                  },
-                                  separatorBuilder: (context, _) =>
-                                      SizedBox(width: 10),
-                                  itemCount: donne.length),
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              id = donne[index]['id'];
+                                              final prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              setState(() {
+                                                prefs.setInt('id_service', id);
+                                              });
+                                              print(id);
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return detail_service();
+                                              }));
+                                            },
+                                          );
+                                        },
+                                        separatorBuilder: (context, _) =>
+                                            SizedBox(width: 10),
+                                        itemCount: donne.length),
+                                  ),
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      NewBold("Mes coupons", 20, Colors.black),
+                                     
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
-
-                            // Row(
-                            //   children: [
-                            //     Text(
-                            //       "Promototions",
-                            //       style: TextStyle(
-                            //           fontSize: 20, fontWeight: FontWeight.bold),
-                            //     ),
-                            //     Spacer(),
-                            //     TextButton(
-                            //       onPressed: () {
-                            //         Navigator.of(context).push(MaterialPageRoute(
-                            //             builder: (context) => Promotion_page()));
-                            //       },
-                            //       child: const Text(
-                            //         "Voir plus",
-                            //         style:
-                            //             TextStyle(color: Colors.blue, fontSize: 15),
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
-                            // const SizedBox(height: 25),
-                            // ListView.separated(
-                            //   separatorBuilder: (context, index) => SizedBox(
-                            //     height: 10,
-                            //   ),
-                            //   shrinkWrap: true,
-                            //   physics: const NeverScrollableScrollPhysics(),
-                            //   itemCount: mespromotions.length,
-                            //   itemBuilder: (context, index) {
-                            //     return GestureDetector(
-                            //       onTap: () {
-                            //         showModalBottomSheet(
-                            //             context: context,
-                            //             builder: (BuildContext context) {
-                            //               return Scaffold(
-                            //                 appBar: AppBar(
-                            //                   backgroundColor: Colors.orange,
-                            //                   title: Text(
-                            //                       "${mespromotions[index]['objet']}"),
-                            //                   centerTitle: true,
-                            //                 ),
-                            //                 body: Stepper(currentStep: 0, steps: [
-                            //                   Step(
-                            //                     title: Text.rich(TextSpan(
-                            //                         text: 'Service :',
-                            //                         children: [
-                            //                           TextSpan(
-                            //                               text:
-                            //                                   "${mespromotions[index]['service']['libelle']} ",
-                            //                               style: TextStyle(
-                            //                                   fontWeight:
-                            //                                       FontWeight.bold))
-                            //                         ])),
-                            //                     subtitle: Text(""),
-                            //                     content: Container(),
-                            //                     isActive: true,
-                            //                   ),
-                            //                   Step(
-                            //                     title: Text.rich(TextSpan(
-                            //                         text: 'Coût :',
-                            //                         children: [
-                            //                           TextSpan(
-                            //                               text:
-                            //                                   "${mespromotions[index]['service']['tarif']}XOF ",
-                            //                               style: TextStyle(
-                            //                                   fontWeight:
-                            //                                       FontWeight.bold))
-                            //                         ])),
-                            //                     subtitle: Text(""),
-                            //                     content: Container(),
-                            //                     isActive: true,
-                            //                   ),
-                            //                   Step(
-                            //                     title: Text.rich(TextSpan(
-                            //                         text: 'Description :',
-                            //                         children: [
-                            //                           TextSpan(
-                            //                               text: "",
-                            //                               style: TextStyle(
-                            //                                   fontWeight:
-                            //                                       FontWeight.bold))
-                            //                         ])),
-                            //                     subtitle: Text(
-                            //                         " ${mespromotions[index]['description']}"),
-                            //                     content: Container(),
-                            //                     isActive: true,
-                            //                   ),
-                            //                   Step(
-                            //                     title: Text.rich(TextSpan(
-                            //                         text:
-                            //                             'Date de Debut et Date de fin :',
-                            //                         children: [
-                            //                           TextSpan(
-                            //                               text: "",
-                            //                               style: TextStyle(
-                            //                                   fontWeight:
-                            //                                       FontWeight.bold))
-                            //                         ])),
-                            //                     subtitle: Text(
-                            //                         " ${mespromotions[index]['date_debut']}- ${mespromotions[index]['date_fin']}"),
-                            //                     content: Container(),
-                            //                     isActive: true,
-                            //                   ),
-                            //                 ]),
-                            //               );
-                            //             });
-                            //       },
-                            //       child: Card(
-                            //         color: Colors.white,
-                            //         elevation: 8,
-                            //         child: Column(
-                            //           crossAxisAlignment: CrossAxisAlignment.start,
-                            //           children: [
-                            //             Container(
-                            //               decoration: BoxDecoration(
-                            //                   color: Colors.white,
-                            //                   border: Border.all(
-                            //                       color: Colors.black, width: 1)),
-                            //               height: 200,
-                            //               width: double.infinity,
-                            //               child: Image.asset(
-                            //                 "assets/promotions.png",
-                            //                 fit: BoxFit.cover,
-                            //               ),
-                            //             ),
-                            //             Padding(
-                            //               padding: const EdgeInsets.all(8.0),
-                            //               child: Row(
-                            //                 children: [
-                            //                   Text(
-                            //                     "${mespromotions[index]['objet']}",
-                            //                     style: TextStyle(
-                            //                         fontSize: 20,
-                            //                         fontWeight: FontWeight.bold,
-                            //                         color: Colors.red),
-                            //                   ),
-                            //                   Spacer(),
-                            //                   Text(
-                            //                     "${mespromotions[index]['pourcentage']}%",
-                            //                     style: TextStyle(
-                            //                         fontSize: 20,
-                            //                         fontWeight: FontWeight.bold,
-                            //                         color: Colors.orangeAccent),
-                            //                   ),
-                            //                 ],
-                            //               ),
-                            //             ),
-                            //             TextButton(
-                            //                 onPressed: () {
-                            //                   Navigator.of(context).push(
-                            //                       MaterialPageRoute(
-                            //                           builder: (context) =>
-                            //                               Promotion_page()));
-                            //                 },
-                            //                 child: Text("Voir Plus"))
-                            //           ],
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            // ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              );
+                      SliverList.builder(
+                          itemCount: mesCoupons.length,
+                          itemBuilder: (context, index) {
+                            final result = mesCoupons[index];
+                            String date = result['expiration'];
+                            DateTime conver = DateTime.parse(date);
+                            String newDate =
+                                DateFormat.yMMMMEEEEd('fr_FR').format(conver);
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: ClipPath(
+                                clipper: TicketClipper(),
+                                child: Card(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: result['status'] == "Utilisé"
+                                          ? Colors.red[100]
+                                          : Colors
+                                              .green[100], // Fond jaune clair
+                                      borderRadius: BorderRadius.circular(12.0),
+
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Coupon N*${result['code']}",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 8.0,
+                                                  vertical: 4.0),
+                                              decoration: BoxDecoration(
+                                                color: result['status'] ==
+                                                        "Utilisé"
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              child: Text(
+                                                '${result['status']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        Text(
+                                          'Expiration : $newDate',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        Text(
+                                          'Pourcentage : ${result['pourcentage']}%',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })
+                    ],
+                  ));
             }
           }),
     );

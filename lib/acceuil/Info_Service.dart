@@ -111,17 +111,12 @@ class _detail_serviceState extends State<detail_service> {
         } else {
           return Scaffold(
               bottomNavigationBar: BottomAppBar(
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return prise_rdv();
-                      }));
-                    },
-                    child: Text(
-                      "Reserver dès maintenant",
-                      style: TextStyle(),
-                    )),
+                child:  boutton(context, false, Colors.blue, "Reserver dès maintenant", () {
+                    Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return prise_rdv();
+                }));
+                 })
               ),
               body: CustomScrollView(
                 slivers: [
@@ -236,6 +231,7 @@ class _detail_serviceState extends State<detail_service> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Description",
+                                  textAlign: TextAlign.justify,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   SizedBox(

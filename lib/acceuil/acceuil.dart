@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gestion_salon_coiffure/acceuil/compte.dart';
 import 'package:gestion_salon_coiffure/acceuil/recherche.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:gestion_salon_coiffure/promotions/promotion_page.dart';
-import 'package:gestion_salon_coiffure/promotions/promotion_provider.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/promotion_page.dart';
+import 'package:gestion_salon_coiffure/promotions_coupons/promotion_provider.dart';
 
 import 'first_page.dart';
 
@@ -19,7 +19,7 @@ class _acceuilState extends State<acceuil> {
   List mespromotions = [];
   Promotion_provider promotionProvider = Promotion_provider();
   Future<void> GetPromotion() async {
-    promotionProvider.Get_Promotion().then((value) {
+    promotionProvider.get_Promotion().then((value) {
       return setState(() {
         mespromotions = value;
         print(value);
