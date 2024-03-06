@@ -189,9 +189,9 @@ class _ReservationTraiteState extends State<ReservationTraite> {
                                                   MainAxisAlignment.spaceBetween,
                                               children: [
                                                 NewBold(
-                                                    "Total", 20, Colors.black),
+                                                    "Total", 15, Colors.black),
                                                 NewBold(
-                                                    "20000FCFA", 20, Colors.red)
+                                                    "20000FCFA", 18, Colors.red)
                                               ],
                                             ),
                                             Divider(),

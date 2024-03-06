@@ -130,64 +130,7 @@ class _historiqueState extends State<historique> {
                         context: context,
                         builder: (BuildContext context) {
                           return Scaffold(
-                            bottomNavigationBar: BottomAppBar(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.red),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            )),
-                                        onPressed: () async {
-                                          final prefs = await SharedPreferences
-                                              .getInstance();
-                                          int? id;
-                                          id = prefs.get('id_valid_reservation')
-                                              as int?;
-                                          annulerReservation(id!);
-                                        },
-                                        child:
-                                            Titre('Annuler', 15, Colors.white)),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.blue),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            )),
-                                        onPressed: () async {
-                                          final prefs = await SharedPreferences
-                                              .getInstance();
-                                          int? id;
-                                          id = prefs.get('id_valid_reservation')
-                                              as int?;
-                                          validerReservation(id!);
-                                        },
-                                        child: Mytext(
-                                            'Traiter', 15, Colors.white)),
-                                  )
-                                ],
-                              ),
-                            ),
+                           
                             body: Padding(
                               padding: const EdgeInsets.only(top: 0, left: 0),
                               child: Padding(
@@ -216,16 +159,23 @@ class _historiqueState extends State<historique> {
                                             ? Colors.orange
                                             : Colors.green,
                                         child: ListTile(
-                                          leading: status == 'Attente'
-                                              ? FaIcon(
-                                                  FontAwesomeIcons.xmark,
-                                                  color: Colors.white,
-                                                )
-                                              : FaIcon(
-                                                  FontAwesomeIcons.circleCheck),
+                                        
                                           title: Center(
-                                              child: NewBold(
-                                                  '$status', 25, Colors.white)),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                 status == 'Attente'
+                                                  ? FaIcon(
+                                                      FontAwesomeIcons.xmark,
+                                                      color: Colors.white,
+                                                    )
+                                                  : FaIcon(FontAwesomeIcons
+                                                      .circleCheck),
+                                                  NewBold(
+                                                      '$status', 25, Colors.white),
+                                                ],
+                                              )),
                                         ),
                                       ),
                                       SizedBox(

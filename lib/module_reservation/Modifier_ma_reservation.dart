@@ -14,14 +14,14 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class prise_rdv extends StatefulWidget {
-  const prise_rdv({super.key});
+class ModifierReservation extends StatefulWidget {
+
 
   @override
-  State<prise_rdv> createState() => _prise_rdvState();
+  State<ModifierReservation> createState() => _ModifierReservationState();
 }
 
-class _prise_rdvState extends State<prise_rdv> {
+class _ModifierReservationState extends State<ModifierReservation> {
   moncontroller controller = moncontroller();
   Rx<Reservation> reserv = Reservation().obs;
   DateTime? selectedTime;
@@ -34,7 +34,6 @@ class _prise_rdvState extends State<prise_rdv> {
   TextEditingController _ControlCoupon = TextEditingController();
   // Lister les differents services de l'entreprise
   List Photos = [];
-  
   Future<void> Mes_Services() async {
     // reserv.value.getServices().then((value) {
     //   setState(() {
@@ -78,32 +77,6 @@ class _prise_rdvState extends State<prise_rdv> {
       });
     }
     print(response.body);
-  }
-
-  int somme = -1;
-  Future validerCoupons() async {
-    final prefs = await SharedPreferences.getInstance();
-    final url = monurl("calculCoupon");
-    final uri = Uri.parse(url);
-    final reponse = await http.post(uri,
-        body: jsonEncode(
-          {
-            'service_id': "${prefs.get('id_service')}",
-            "code": _ControlCoupon.text
-          },
-        ),
-        headers: header("${prefs.get("token")}"));
-    final result = jsonDecode(reponse.body);
-    if (result['status']) {
-      message(context, "${result['message']}", Colors.green);
-      return result['message'];
-
-      _ControlCoupon.clear();
-    } else {
-      message(context, "${result['message']}", Colors.red);
-
-      _ControlCoupon.clear();
-    }
   }
 
   Future<dynamic> reserver() async {
@@ -192,294 +165,296 @@ class _prise_rdvState extends State<prise_rdv> {
               isScrollControlled: true,
               context: context,
               builder: (BuildContext context) {
-                return StatefulBuilder(builder: (context, setState) {
-                  return Scaffold(
-                    bottomNavigationBar: BottomAppBar(
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Titre("${somme == -1 ? Liste_Service['tarif'] : somme} FCFA", 15,
-                                  Colors.black),
-                              Titre(
-                                  "${Liste_Service['libelle']} ${Liste_Service['duree']}h) ",
-                                  12,
-                                  Colors.black),
-                            ],
-                          ),
-                          Spacer(),
-                          ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.blue),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                print("object");
-
-                                // setState(() {
-                                //   loading = !loading;
-                                // });
-
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return const Center(
-                                        child: SpinKitCircle(
-                                          color: Colors.black,
-                                        ),
-                                      );
-                                    });
-
-                                reserver();
-                              },
-                              child: Mytext("Valider", 15, Colors.white))
-                        ],
-                      ),
-                    ),
-                    appBar: AppBar(
-                      title: Titre('Verifiez et confirmez ', 20, Colors.black),
-                    ),
-                    body: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
+                return Scaffold(
+                  bottomNavigationBar: BottomAppBar(
+                    color: Colors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              child: Row(children: [
-                                Container(
-                                    height: 80,
-                                    width: 80,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Image.network(
-                                      Photos.isEmpty
-                                          ? 'https://via.placeholder.com/200'
-                                          : ImgDB(
-                                              "public/image/${Liste_Service['photos'][0]['path']}",
-                                            ),
-                                      fit: BoxFit.cover,
-                                    )),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    NewBold("${Liste_Service['libelle']}", 20,
-                                        Colors.black),
-                                  ],
-                                ),
-                              ]),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-
-                            ListTile(
-                                leading: FaIcon(
-                                  FontAwesomeIcons.calendarDays,
-                                  color:
-                                      const Color.fromARGB(255, 111, 110, 110),
-                                ),
-                                title: NewText('$Madate', 18,
-                                    const Color.fromARGB(255, 111, 110, 110))),
-                            ListTile(
-                                leading: FaIcon(FontAwesomeIcons.clock),
-                                title: NewText(
-                                    "${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}",
-                                    18,
-                                    const Color.fromARGB(255, 111, 110, 110))),
-                            ListTile(
-                                leading: FaIcon(FontAwesomeIcons.hourglass),
-                                title: NewText(
-                                    '${Liste_Service['duree']}h  $somme',
-                                    18,
-                                    const Color.fromARGB(255, 111, 110, 110))),
-
-                            Divider(),
-                            Row(
-                              children: [
-                                NewBold("Total", 15, Colors.black),
-                                Spacer(),
-                                Titre("${ somme==-1?Liste_Service['tarif']:somme} FCFA", 15,
-                                    Colors.black),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                NewBold("Payer maintenant", 15, Colors.green),
-                                Spacer(),
-                                NewBold("0 FCFA", 15, Colors.green),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                NewBold("Payer sur place", 15, Colors.black),
-                                Spacer(),
-                                NewBold("${somme == -1 ? Liste_Service['tarif'] : somme}}FCFA", 15,
-                                    Colors.black),
-                              ],
-                            ),
-                            Divider(),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Center(
-                                child: Titre(
-                                    "Mode de payement", 20, Colors.black)),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Mytext(
-                                "Le reglement s'effectuera sur place à la fin  de votre rendez-vous",
-                                15,
+                            Titre("${Liste_Service['tarif']} FCFA", 15,
                                 Colors.black),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(9),
-                                      border: Border.all(
-                                          width: 1, color: Colors.blue)),
-                                  child: Center(
-                                      child: FaIcon(
-                                    FontAwesomeIcons.store,
-                                    size: 20,
-                                  )),
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                NewBold("Payer sur place", 15, Colors.black)
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Divider(),
-                            NewBold(
-                                "Entrez votre code coupon", 15, Colors.black),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  height: 30,
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: TextFormField(
-                                    controller: _ControlCoupon,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey)),
-                                      label: Text("Code du coupon"),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 30,
-                                  child: ElevatedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.white),
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(3),
-                                            ),
-                                          )),
-                                      onPressed: () {
-                                       
-                                        validerCoupons()
-                                            .then((value) =>   setState(() {
-                                          somme = value;
-                                          
-                                        }));
-
-                                      
-                                      },
-                                      child: Text(
-                                        'Appliquer',
-                                        style: TextStyle(color: Colors.black),
-                                      )),
-                                )
-                              ],
-                            ),
-                            Text("$somme"),
-                            SizedBox(height: 10)
-
-                            // Card(
-                            //   color: Colors.white,
-                            //   child: ListTile(
-                            //       leading: Mytext("Tarif : ", 18, Colors.black),
-                            //       title: Titre('${Liste_Service['tarif']} FCFA', 20,
-                            //           Colors.red)),
-                            // ),
-                            // Card(
-                            //   color: Colors.white,
-                            //   child: ListTile(
-                            //       leading: Mytext("Duree: ", 18, Colors.black),
-                            //       title: Titre('${Liste_Service['duree']}H', 20,
-                            //           Colors.red)),
-                            // ),
-                            // Card(
-                            //   color: Colors.white,
-                            //   child: ListTile(
-                            //       leading: Mytext("Date :", 18, Colors.black),
-                            //       title: Titre(
-                            //           ' ${controller.today.toString().split(" ")[0]}',
-                            //           20,
-                            //           Colors.red)),
-                            // ),
-                            // Card(
-                            //   color: Colors.white,
-                            //   child: ListTile(
-                            //       leading: Mytext("Heure : ", 18, Colors.black),
-                            //       title: Titre('${""}', 20, Colors.red)),
-                            // ),
+                            Titre(
+                                "${Liste_Service['libelle']}(${Liste_Service['duree']}h) ",
+                                12,
+                                Colors.black),
                           ],
                         ),
+                        Spacer(),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.blue),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              print("object");
+
+                              // setState(() {
+                              //   loading = !loading;
+                              // });
+
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return const Center(
+                                      child: SpinKitCircle(
+                                        color: Colors.black,
+                                      ),
+                                    );
+                                  });
+
+                              reserver();
+                            },
+                            child: Mytext("Valider", 15, Colors.white))
+                      ],
+                    ),
+                  ),
+                  appBar: AppBar(
+                    title: Titre('Verifiez et confirmez', 20, Colors.black),
+                  ),
+                  body: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Row(children: [
+                              Container(
+                                  height: 80,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Image.network(
+                                    Photos.isEmpty
+                                        ? 'https://via.placeholder.com/200'
+                                        : ImgDB(
+                                            "public/image/${Liste_Service['photos'][0]['path']}",
+                                          ),
+                                    fit: BoxFit.cover,
+                                  )),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  NewBold("${Liste_Service['libelle']}", 20,
+                                      Colors.black),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(right: 20),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       for (var i = 0;
+                                  //           i < Liste_Service['moyenne'];
+                                  //           i++)
+                                  //         Icon(
+                                  //           Icons.star,
+                                  //           size: 20,
+                                  //           color: Colors.black,
+                                  //         )
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // Mytext(
+                                  //     "${Liste_Service['moyenne']} (${Liste_Service['notes'].toString().length})",
+                                  //     15,
+                                  //     Color.fromARGB(96, 59, 57, 57))
+                                ],
+                              ),
+                            ]),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+
+                          ListTile(
+                              leading: FaIcon(
+                                FontAwesomeIcons.calendarDays,
+                                color: const Color.fromARGB(255, 111, 110, 110),
+                              ),
+                              title: NewText('$Madate', 18,
+                                  const Color.fromARGB(255, 111, 110, 110))),
+                          ListTile(
+                              leading: FaIcon(FontAwesomeIcons.clock),
+                              title: NewText(
+                                  "${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}",
+                                  18,
+                                  const Color.fromARGB(255, 111, 110, 110))),
+                          ListTile(
+                              leading: FaIcon(FontAwesomeIcons.hourglass),
+                              title: NewText('${Liste_Service['duree']}h', 18,
+                                  const Color.fromARGB(255, 111, 110, 110))),
+
+                          // ListTile(
+                          //     leading:Icon(Icons.event),
+                          //     title: Mytext('${Liste_Service['libelle']}', 15,
+                          //         const Color.fromARGB(255, 111, 110, 110))),
+                          Divider(),
+                          Row(
+                            children: [
+                              NewBold("Total", 15, Colors.black),
+                              Spacer(),
+                              Titre("${Liste_Service['tarif']} FCFA", 15,
+                                  Colors.black),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              NewBold("Payer maintenant", 15, Colors.green),
+                              Spacer(),
+                              NewBold("0 FCFA", 15, Colors.green),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              NewBold("Payer sur place", 15, Colors.black),
+                              Spacer(),
+                              NewBold("${Liste_Service['tarif']}FCFA", 15,
+                                  Colors.black),
+                            ],
+                          ),
+                          Divider(),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Center(
+                              child:
+                                  Titre("Mode de payement", 20, Colors.black)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Mytext(
+                              "Le reglement s'effectuera sur place à la fin  de votre rendez-vous",
+                              15,
+                              Colors.black),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    border: Border.all(
+                                        width: 1, color: Colors.blue)),
+                                child: Center(
+                                    child: FaIcon(
+                                  FontAwesomeIcons.store,
+                                  size: 20,
+                                )),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              NewBold("Payer sur place", 15, Colors.black)
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Divider(),
+                          NewBold("Entrez votre code coupon", 15, Colors.black),
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                height: 30,
+                                width: MediaQuery.of(context).size.width/2,
+                                child: TextFormField(
+                                  controller: _ControlCoupon,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey)
+                                    ),
+                                    label: Text("Code du coupon"),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 30,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(3),
+                                          ),
+                                        )),
+                                  onPressed: (){},
+                                 child: Text('Appliquer',style: TextStyle(color: Colors.black),)),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10)
+
+                          // Card(
+                          //   color: Colors.white,
+                          //   child: ListTile(
+                          //       leading: Mytext("Tarif : ", 18, Colors.black),
+                          //       title: Titre('${Liste_Service['tarif']} FCFA', 20,
+                          //           Colors.red)),
+                          // ),
+                          // Card(
+                          //   color: Colors.white,
+                          //   child: ListTile(
+                          //       leading: Mytext("Duree: ", 18, Colors.black),
+                          //       title: Titre('${Liste_Service['duree']}H', 20,
+                          //           Colors.red)),
+                          // ),
+                          // Card(
+                          //   color: Colors.white,
+                          //   child: ListTile(
+                          //       leading: Mytext("Date :", 18, Colors.black),
+                          //       title: Titre(
+                          //           ' ${controller.today.toString().split(" ")[0]}',
+                          //           20,
+                          //           Colors.red)),
+                          // ),
+                          // Card(
+                          //   color: Colors.white,
+                          //   child: ListTile(
+                          //       leading: Mytext("Heure : ", 18, Colors.black),
+                          //       title: Titre('${""}', 20, Colors.red)),
+                          // ),
+                        ],
                       ),
                     ),
-                  );
-                });
+                  ),
+                );
               });
         }
       } else {
@@ -708,6 +683,9 @@ class _prise_rdvState extends State<prise_rdv> {
                         height: 15,
                       ),
 
+                      SizedBox(
+                        height: 15,
+                      ),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -718,7 +696,7 @@ class _prise_rdvState extends State<prise_rdv> {
                           locale: 'fr_FR',
                           rowHeight: 43,
                           focusedDay: today,
-                          firstDay: today,
+                          firstDay: DateTime.now(),
                           lastDay: DateTime.utc(2024, 12, 31),
                           startingDayOfWeek: StartingDayOfWeek.monday,
                           headerStyle: const HeaderStyle(
@@ -737,50 +715,23 @@ class _prise_rdvState extends State<prise_rdv> {
                           },
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
+                      SizedBox(height: 30,),
 
                       // Text("$char"),
 
                       Column(
                         children: [
                           if (!isAnyHourAvailableForToday())
-                            Column(
-                              children: [
-                                Center(
-                                  child: Container(
-                                    child: Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: FaIcon(
-                                          FontAwesomeIcons.calendar,
-                                          size: 50,
-                                          color: Colors.blue,
-                                        )),
-                                  ),
-                                ),
-                                Titre("Nous sommes complets", 20, Colors.black),
-                                Mytext(
-                                    "Mais vous pouvez réserver pour  le jour prochain",
-                                    15,
-                                    Colors.grey),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Mytext("Selectionner une autre date",
-                                        15, Colors.white),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                )
-                              ],
+                            Center(
+                              child: Container(
+                                color: Colors.red,
+                                child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Titre(
+                                        "OOPS AUCUNE HEURE DISPONIBLE AUJOURD'HUI",
+                                        20,
+                                        Colors.white)),
+                              ),
                             )
                           else
                             for (var i = 8; i <= 22; i += duree)
@@ -996,6 +947,3 @@ class _prise_rdvState extends State<prise_rdv> {
   }
 }
 
-void main() async {
-  runApp(prise_rdv());
-}

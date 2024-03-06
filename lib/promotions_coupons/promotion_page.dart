@@ -517,13 +517,7 @@ class _Promotion_pageState extends State<Promotion_page>
                         const SizedBox(
                           height: 5,
                         ),
-                        GestureDetector(
-                            onTap: () {
-                              _tabController.animateTo(1);
-                              Navigator.of(context).pop();
-                            },
-                            child: cards(
-                                "Coupons", "${taille}", 'assets/coupon.jpg')),
+                        
                       ],
                     ),
                   ),

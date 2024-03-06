@@ -182,7 +182,7 @@ Widget boutton(BuildContext context, bool charg, Color mycolor, String montexte,
               ? SpinKitCircle(
                   color: Colors.white,
                 )
-              :  Mytext(montexte, 25, Colors.white)
+              :  Mytext(montexte, 15, Colors.white)
                 ));
 }
 

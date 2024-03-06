@@ -48,8 +48,8 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
         reservationsToday();
         Navigator.of(context).pop();
       }
-      if (resultat['status'] == true) {
-        message(context, "Valider avec succès", Colors.green);
+      if (resultat['status']) {
+        message(context, "", Colors.green);
         Navigator.of(context).pop();
       }
     }
@@ -69,7 +69,7 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
           message(context, "${resultat['message']}", Colors.red);
           Navigator.of(context).pop();
         }
-        if (resultat['status'] == true) {
+        if (resultat['status']) {
           reservationsToday();
           message(context, "Annuler avec succèss", Colors.green);
           Navigator.of(context).pop();
@@ -127,11 +127,11 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                   subtitle: NewBold('$NewDate ', 15, Colors.red),
                   trailing: FaIcon(FontAwesomeIcons.arrowRight),
                   onTap: () async {
-                    // print("${resultats['id']}");
-                    // final prefs = await SharedPreferences.getInstance();
-                    // setState(() {
-                    //   prefs.setInt('id_valid_reservation', resultats['id']);
-                    // });
+                    print("${resultats['id']}");
+                    final prefs = await SharedPreferences.getInstance();
+                    setState(() {
+                      prefs.setInt('id_valid_reservation', resultats['id']);
+                    });
                     showModalBottomSheet(
 
                         //  backgroundColor: Colors.transparent,
@@ -188,10 +188,10 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                                         onPressed: () async {
                                           final prefs = await SharedPreferences
                                               .getInstance();
-                                          int? id;
-                                          id = prefs.get('id_valid_reservation')
-                                              as int?;
-                                          validerReservation(id!);
+
+                                          print(
+                                              "${prefs.get('id_valid_reservation')}");
+                                          validerReservation(prefs.getInt('id_valid_reservation')!);
                                         },
                                         child: Mytext(
                                             'Traiter', 15, Colors.white)),
@@ -223,11 +223,11 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                                         height: 15,
                                       ),
                                       Card(
-                                        color: status == 'Attente'
+                                        color: status == 'En Attente'
                                             ? Colors.orange
                                             : Colors.green,
                                         child: ListTile(
-                                          leading: status == 'Attente'
+                                          leading: status == 'En Attente'
                                               ? FaIcon(
                                                   FontAwesomeIcons.xmark,
                                                   color: Colors.white,
@@ -298,8 +298,8 @@ class _ReservationEnCoursState extends State<ReservationEnCours> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             NewText("Total", 18, Colors.black),
-                                            NewBold(
-                                                "$montant FCFA", 23, Colors.red),
+                                            NewBold("$montant FCFA", 23,
+                                                Colors.red),
                                           ],
                                         ),
                                       ),

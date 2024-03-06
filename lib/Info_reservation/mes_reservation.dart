@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_feedback/flutter_emoji_feedback.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
+import 'package:gestion_salon_coiffure/module_reservation/Modifier_ma_reservation.dart';
+import 'package:gestion_salon_coiffure/module_reservation/Passer_Une_Reservation.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -125,13 +129,13 @@ class _Mes_reservationsState extends State<Mes_reservations>
                 child: Titre('Reservations', 15, Colors.black)),
             bottom: TabBar(controller: _tabController, tabs: [
               Tab(
-                child: Mytext('Termineé', 15, Colors.black),
+                child: Mytext('Termineés', 15, Colors.black),
               ),
               Tab(
                 child: Mytext('A venir', 15, Colors.black),
               ),
               Tab(
-                child: Mytext('Passé', 15, Colors.black),
+                child: Mytext('Passées', 15, Colors.black),
               ),
             ]),
           ),
@@ -306,145 +310,106 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                 SizedBox(
                                                   height: 30,
                                                 ),
-                                                ListTile(
-                                                  onTap: () {},
-                                                  leading: FaIcon(
-                                                      FontAwesomeIcons
-                                                          .calendarDay),
-                                                  title: NewBold(
-                                                      'Gerer votre rendez-vous',
-                                                      15,
-                                                      Colors.black),
-                                                  subtitle: Mytext(
-                                                      'Reprogrammez ou annulez votre rendez-vous',
-                                                      13,
-                                                      Colors.grey),
-                                                ),
-                                                Divider(
-                                                  color: Colors.grey,
-                                                ),
+
                                                 ListTile(
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         // isScrollControlled: true,
                                                         context: context,
                                                         builder: (context) {
-                                                        return StatefulBuilder(builder: (context, setState) => Scaffold(
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                            body: Center(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        16),
-                                                                child:
-                                                                    SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Titre(
-                                                                          'Comment avez-vous rouvé la qualité de cette prestation?',
-                                                                          15,
-                                                                          Colors
-                                                                              .black),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      Mytext(
-                                                                          "Votre reponse est anonyme.Elle permet à l'entrprise d'ameliorer votre expérience$Rating",
-                                                                          12,
-                                                                          const Color
-                                                                              .fromARGB(
-                                                                              255,
-                                                                              66,
-                                                                              65,
-                                                                              65)),
-                                                                      EmojiFeedback(
-                                                                        animDuration:
-                                                                            const Duration(milliseconds: 300),
-                                                                        curve: Curves
-                                                                            .bounceIn,
-                                                                        inactiveElementScale:
-                                                                            .5,
-                                                                        onChanged:
-                                                                            (value) {
-                                                                          setState(
-                                                                              () {
-                                                                            rating =
-                                                                                value;
-                                                                          });
-                                                                          if (rating <
-                                                                              3) {
-                                                                           setState(() {
-                                                                              Rating = true;
-                                                                           });
-                                                                          }
-                                                                          print(
-                                                                              Rating);
-                                                                        },
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                  // ignore: unrelated_type_equality_checks
-                                                                  rating<4?
-                                                                      TextFormField(
-                                                                          controller:
-                                                                              _controlCommentaire,
-                                                                          maxLines:
-                                                                              2,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            hintText:
-                                                                                'Laisse un commentaire$rating',
-                                                                            focusedBorder:
-                                                                                OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.blue, width: 1)),
-                                                                            enabledBorder:
-                                                                                OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey, width: 1)),
+                                                          return StatefulBuilder(
+                                                              builder: (context,
+                                                                      setState) =>
+                                                                  Scaffold(
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    body:
+                                                                        Center(
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            16),
+                                                                        child:
+                                                                            SingleChildScrollView(
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Titre('Comment avez-vous rouvé la qualité de cette prestation?', 15, Colors.black),
+                                                                              SizedBox(
+                                                                                height: 5,
+                                                                              ),
+                                                                              Mytext("Votre reponse est anonyme.Elle permet à l'entrprise d'ameliorer votre expérience$Rating", 12, const Color.fromARGB(255, 66, 65, 65)),
+                                                                              EmojiFeedback(
+                                                                                animDuration: const Duration(milliseconds: 300),
+                                                                                curve: Curves.bounceIn,
+                                                                                inactiveElementScale: .5,
+                                                                                onChanged: (value) {
+                                                                                  setState(() {
+                                                                                    rating = value;
+                                                                                  });
+                                                                                  if (rating < 3) {
+                                                                                    setState(() {
+                                                                                      Rating = true;
+                                                                                    });
+                                                                                  }
+                                                                                  print(Rating);
+                                                                                },
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 5,
+                                                                              ),
+                                                                              // ignore: unrelated_type_equality_checks
+                                                                              rating < 4
+                                                                                  ? TextFormField(
+                                                                                      controller: _controlCommentaire,
+                                                                                      maxLines: 2,
+                                                                                      decoration: InputDecoration(
+                                                                                        hintText: 'Laisse un commentaire$rating',
+                                                                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.blue, width: 1)),
+                                                                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey, width: 1)),
+                                                                                      ),
+                                                                                    )
+                                                                                  : Text(""),
+                                                                              SizedBox(
+                                                                                height: 25,
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  ElevatedButton(
+                                                                                      style: ButtonStyle(
+                                                                                          backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                                                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                            RoundedRectangleBorder(
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                            ),
+                                                                                          )),
+                                                                                      onPressed: () {
+                                                                                        Navigator.of(context).pop();
+                                                                                      },
+                                                                                      child: Mytext('Pas maintenant', 15, Colors.blue)),
+                                                                                  ElevatedButton(
+                                                                                      style: ButtonStyle(
+                                                                                          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                                                            RoundedRectangleBorder(
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                            ),
+                                                                                          )),
+                                                                                      onPressed: () {
+                                                                                        noter();
+                                                                                      },
+                                                                                      child: Mytext('Envoyer', 15, Colors.white))
+                                                                                ],
+                                                                              ),
+                                                                            ],
                                                                           ),
-                                                                        ): Text(""),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            25,
+                                                                        ),
                                                                       ),
-                                                                      Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          ElevatedButton(
-                                                                              style: ButtonStyle(
-                                                                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                                                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                                                    RoundedRectangleBorder(
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                  )),
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              child: Mytext('Pas maintenant', 15, Colors.blue)),
-                                                                          ElevatedButton(
-                                                                              style: ButtonStyle(
-                                                                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                                                    RoundedRectangleBorder(
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                  )),
-                                                                              onPressed: () {
-                                                                                noter();
-                                                                              },
-                                                                              child: Mytext('Envoyer', 15, Colors.white))
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ));
+                                                                    ),
+                                                                  ));
                                                         });
                                                   },
                                                   title: NewBold(
@@ -455,18 +420,28 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                       "Vôtre réponse est anonyme , Elle permet au service de s'ameliorer.",
                                                       13,
                                                       Colors.grey),
-                                                  leading: FaIcon(
-                                                    FontAwesomeIcons.solidStar,
-                                                    color: Colors.amber,
+                                                  leading: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.amber[100],
+                                                    child: FaIcon(
+                                                      FontAwesomeIcons
+                                                          .solidStar,
+                                                      color: Colors.amber,
+                                                    ),
                                                   ),
                                                 ),
                                                 Divider(),
                                                 SizedBox(
-                                                  height: 30,
+                                                  height: 20,
+                                                ),
+                                                Titre("Récapitulatif", 15,
+                                                    Colors.black),
+                                                SizedBox(
+                                                  height: 15,
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Titre('Total', 20,
+                                                    Titre('Total', 15,
                                                         Colors.black),
                                                     Spacer(),
                                                     Titre(
@@ -474,6 +449,28 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                         20,
                                                         Colors.black),
                                                   ],
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Center(
+                                                  child: Text.rich(TextSpan(
+                                                      text:
+                                                          "Réference du rendez-vous",
+                                                      style: TextStyle(
+                                                          color: Colors.grey),
+                                                      children: [
+                                                        TextSpan(
+                                                            text:
+                                                                " ${result['id']}",
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold))
+                                                      ])),
                                                 )
                                               ],
                                             ),
@@ -724,9 +721,15 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                 ),
                                                 ListTile(
                                                   onTap: () {},
-                                                  leading: FaIcon(
+                                                  leading: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.indigo[100],
+                                                    child: FaIcon(
                                                       FontAwesomeIcons
-                                                          .calendarDay),
+                                                          .calendarDay,
+                                                      color: Colors.indigo,
+                                                    ),
+                                                  ),
                                                   title: NewBold(
                                                       'Gerer votre rendez-vous',
                                                       15,
@@ -739,22 +742,60 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                 Divider(
                                                   color: Colors.grey,
                                                 ),
-
-                                                Divider(),
                                                 SizedBox(
-                                                  height: 30,
+                                                  height: 10,
+                                                ),
+                                                NewBold("Recapitulatif", 15,
+                                                    Colors.black),
+                                                SizedBox(
+                                                  height: 10,
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Titre('Total', 20,
+                                                    Titre('Total', 15,
                                                         Colors.black),
                                                     Spacer(),
                                                     Titre(
-                                                        '${result['montant']} FCFA',
-                                                        20,
+                                                        '${result['montant']} F CFA',
+                                                        18,
                                                         Colors.black),
                                                   ],
-                                                )
+                                                ),
+                                                Divider(),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                NewBold(
+                                                    "Politique d'annulation",
+                                                    15,
+                                                    Colors.black),
+                                                SizedBox(
+                                                  height: 6,
+                                                ),
+
+                                                Center(
+                                                  child: Text.rich(TextSpan(
+                                                      text:
+                                                          "Veuillez éviter d'annuler  dans un delais de 12 heures avant votre rendez-vous",
+                                                      style:
+                                                          GoogleFonts.andadaPro(
+                                                              color:
+                                                                  Colors.grey),
+                                                      children: [
+                                                        TextSpan(
+                                                            text:
+                                                                " ${result['id']}",
+                                                            style: GoogleFonts
+                                                                .andadaPro(
+                                                                    fontSize:
+                                                                        15,
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold))
+                                                      ])),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -808,22 +849,32 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          FittedBox(
+                                          Container(
                                             child: Text(
-                                              "${result['service']['libelle']} ",
+                                              "${result['service']['libelle']}",
+                                              maxLines: 1,
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black),
                                             ),
                                           ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
                                           Mytext('${result['heure']}', 15,
                                               Colors.black),
-                                          FittedBox(
-                                            child: Titre(
-                                                '${result['montant']}FCFA',
-                                                15,
-                                                Colors.black),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              "${result['montant']}FCFA",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -1001,49 +1052,105 @@ class _Mes_reservationsState extends State<Mes_reservations>
                                                   height: 30,
                                                 ),
                                                 ListTile(
-                                                  onTap: () {},
-                                                  leading: FaIcon(
+                                                  leading: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.indigo[100],
+                                                    child: FaIcon(
                                                       FontAwesomeIcons
-                                                          .calendarDay),
+                                                          .calendarDay,
+                                                      color: Colors.indigo,
+                                                    ),
+                                                  ),
                                                   title: NewBold(
                                                       'Gerer votre rendez-vous',
                                                       15,
                                                       Colors.black),
                                                   subtitle: Mytext(
-                                                      'Reprogrammez ou annulez votre rendez-vous',
+                                                      'Reprogrammez la reservation',
                                                       13,
                                                       Colors.grey),
+                                                  onTap: () async {
+                                                    final prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+                                                    prefs.setInt(
+                                                        'idReservation',
+                                                        result['id']);
+                                                    prefs.setInt('id_service',
+                                                        result['service_id']);
+                                                    print(prefs
+                                                        .get("idReservation"));
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                            builder: (context) =>
+                                                                ModifierReservation()));
+                                                  },
                                                 ),
-
-                                                Divider(),
-                                                //  ListTile(
-                                                //   title: NewBold(
-                                                //       'Evaluer la prestation',
-                                                //       15,
-                                                //       Colors.black),
-                                                //   subtitle: Mytext(
-                                                //       "Vôtre réponse est anonyme , Elle permet au service de s'ameliorer.",
-                                                //       13,
-                                                //       Colors.grey),
-                                                //   leading: FaIcon(
-                                                //     FontAwesomeIcons.solidStar,
-                                                //     color: Colors.amber,
-                                                //   ),
-                                                // ),
+                                                Divider(
+                                                  color: Colors.grey,
+                                                ),
                                                 SizedBox(
-                                                  height: 30,
+                                                  height: 10,
+                                                ),
+                                                NewBold("Recapitulatif", 15,
+                                                    Colors.black),
+                                                SizedBox(
+                                                  height: 10,
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Titre('Total', 20,
+                                                    Titre('Total', 15,
                                                         Colors.black),
                                                     Spacer(),
                                                     Titre(
-                                                        '${result['montant']} FCFA',
-                                                        20,
+                                                        '${result['montant']} F CFA',
+                                                        18,
                                                         Colors.black),
                                                   ],
-                                                )
+                                                ),
+                                                Divider(),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                NewBold(
+                                                    "Politique d'annulation",
+                                                    15,
+                                                    Colors.black),
+                                                SizedBox(
+                                                  height: 6,
+                                                ),
+
+                                                Center(
+                                                  child: Text.rich(TextSpan(
+                                                      text:
+                                                          "Veuillez éviter d'annuler  dans un delais de ",
+                                                      style:
+                                                          GoogleFonts.andadaPro(
+                                                              color:
+                                                                  Colors.grey),
+                                                      children: [
+                                                        TextSpan(
+                                                          text: " 12 heures",
+                                                          style: GoogleFonts
+                                                              .andadaPro(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                        ),
+                                                        TextSpan(
+                                                          text:
+                                                              "  avant votre rendez-vous",
+                                                          style: GoogleFonts
+                                                              .andadaPro(
+                                                                  color: Colors
+                                                                      .grey),
+                                                        )
+                                                      ])),
+                                                ),
                                               ],
                                             ),
                                           ),

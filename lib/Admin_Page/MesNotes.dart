@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gestion_salon_coiffure/Admin_Page/provider_notes.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -12,6 +13,8 @@ class MesNotes extends StatefulWidget {
 }
 
 class _MesNotesState extends State<MesNotes> {
+  noteProvider providernote = noteProvider();
+  List mesVotes = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +30,11 @@ class _MesNotesState extends State<MesNotes> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  ElevatedButton(onPressed: () {
+                     providernote.getnotes().then((value) => setState(() {
+                       mesVotes=value;
+                     }));
+                  }, child: Text("")),
                   SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
@@ -99,7 +107,7 @@ class _MesNotesState extends State<MesNotes> {
           ),
           SliverList.separated(
               separatorBuilder: (context, index) {
-               return SizedBox(
+                return SizedBox(
                   height: 15,
                 );
               },

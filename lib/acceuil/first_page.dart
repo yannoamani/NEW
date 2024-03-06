@@ -219,7 +219,7 @@ class _First_pageState extends State<First_page> {
                                   ),
                                   Row(
                                     children: [
-                                      Titre("Prochain rendez-vous", 20,
+                                      Titre("Prochain rendez-vous", 15,
                                           Colors.black),
                                       Spacer(),
                                       TextButton(
@@ -309,15 +309,14 @@ class _First_pageState extends State<First_page> {
                                                           MainAxisAlignment
                                                               .start,
                                                       children: [
-                                                        FittedBox(
-                                                          // fit: BoxFit.scaleDown,
-                                                          // child: Titre(
-                                                          //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
-                                                          //     15,
-                                                          //     Colors.white),
+                                                        Container(
                                                           child: Text(
                                                             "${result['service']['libelle']} ",
-                                                            style: TextStyle(
+                                                             overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            style: const TextStyle(
                                                                 fontSize: 20,
                                                                 color: Colors
                                                                     .white),
@@ -327,10 +326,12 @@ class _First_pageState extends State<First_page> {
                                                             '${result['heure']}',
                                                             15,
                                                             Colors.white),
-                                                        Titre(
-                                                            '${result['montant']} FCFA',
-                                                            15,
-                                                            Colors.white),
+                                                        FittedBox(
+                                                          child: Titre(
+                                                              '${result['montant']} FCFA',
+                                                              15,
+                                                              Colors.white),
+                                                        ),
                                                         // SizedBox(height: 5,),
                                                         Container(
                                                           decoration: BoxDecoration(
@@ -341,7 +342,7 @@ class _First_pageState extends State<First_page> {
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          9)),
+                                                                          3)),
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -405,7 +406,7 @@ class _First_pageState extends State<First_page> {
                                                   color: Colors.transparent,
                                                   border: Border.all(
                                                       width: 1,
-                                                      color: Colors.black),
+                                                      color: Colors.grey),
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(9))),
@@ -424,16 +425,11 @@ class _First_pageState extends State<First_page> {
                                                     ),
                                                     Container(
                                                       height: 200,
-                                                      decoration: BoxDecoration(
+                                                      decoration: const BoxDecoration(
                                                           boxShadow: [],
                                                           color: Colors
                                                               .transparent,
-                                                          border: Border(
-                                                            bottom: BorderSide(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .black),
-                                                          )),
+                                                          ),
                                                       child: Image.network(
                                                         ImgDB(
                                                             "public/image/$photos"),
@@ -457,25 +453,25 @@ class _First_pageState extends State<First_page> {
                                                           SizedBox(
                                                             height: 5,
                                                           ),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                '${info['libelle']}',
-                                                                style: GoogleFonts.openSans(
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                maxLines:
-                                                                    1, // Set the maximum number of lines to 1,
-                                                              )
-                                                            ],
+                                                          Container(
+                                                            child: Text(
+                                                              '${info['libelle']} ',
+                                                          
+                                                              
+                                                              style: GoogleFonts.openSans(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines:
+                                                                  1, // Set the maximum number of lines to 1,
+                                                            ),
                                                           ),
                                                           SizedBox(
                                                             height: 5,
@@ -484,12 +480,12 @@ class _First_pageState extends State<First_page> {
                                                             decoration: BoxDecoration(
                                                                 border:
                                                                     Border.all(
-                                                                        width:
-                                                                            1),
+                                                                       
+                                                                            color: Colors.grey),
                                                                 borderRadius:
                                                                     BorderRadius
                                                                         .circular(
-                                                                            10)),
+                                                                            5)),
                                                             child: Padding(
                                                                 padding:
                                                                     EdgeInsets
