@@ -34,7 +34,7 @@ class _prise_rdvState extends State<prise_rdv> {
   TextEditingController _ControlCoupon = TextEditingController();
   // Lister les differents services de l'entreprise
   List Photos = [];
-  
+
   Future<void> Mes_Services() async {
     // reserv.value.getServices().then((value) {
     //   setState(() {
@@ -204,7 +204,9 @@ class _prise_rdvState extends State<prise_rdv> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Titre("${somme == -1 ? Liste_Service['tarif'] : somme} FCFA", 15,
+                              Titre(
+                                  "${somme == -1 ? Liste_Service['tarif'] : somme} FCFA",
+                                  15,
                                   Colors.black),
                               Titre(
                                   "${Liste_Service['libelle']} ${Liste_Service['duree']}h) ",
@@ -323,7 +325,9 @@ class _prise_rdvState extends State<prise_rdv> {
                               children: [
                                 NewBold("Total", 15, Colors.black),
                                 Spacer(),
-                                Titre("${ somme==-1?Liste_Service['tarif']:somme} FCFA", 15,
+                                Titre(
+                                    "${somme == -1 ? Liste_Service['tarif'] : somme} FCFA",
+                                    15,
                                     Colors.black),
                               ],
                             ),
@@ -344,7 +348,9 @@ class _prise_rdvState extends State<prise_rdv> {
                               children: [
                                 NewBold("Payer sur place", 15, Colors.black),
                                 Spacer(),
-                                NewBold("${somme == -1 ? Liste_Service['tarif'] : somme}}FCFA", 15,
+                                NewBold(
+                                    "${somme == -1 ? Liste_Service['tarif'] : somme}}FCFA",
+                                    15,
                                     Colors.black),
                               ],
                             ),
@@ -426,14 +432,10 @@ class _prise_rdvState extends State<prise_rdv> {
                                             ),
                                           )),
                                       onPressed: () {
-                                       
                                         validerCoupons()
-                                            .then((value) =>   setState(() {
-                                          somme = value;
-                                          
-                                        }));
-
-                                      
+                                            .then((value) => setState(() {
+                                                  somme = value;
+                                                }));
                                       },
                                       child: Text(
                                         'Appliquer',
@@ -718,7 +720,7 @@ class _prise_rdvState extends State<prise_rdv> {
                           locale: 'fr_FR',
                           rowHeight: 43,
                           focusedDay: today,
-                          firstDay: today,
+                          firstDay: DateTime.now(),
                           lastDay: DateTime.utc(2024, 12, 31),
                           startingDayOfWeek: StartingDayOfWeek.monday,
                           headerStyle: const HeaderStyle(

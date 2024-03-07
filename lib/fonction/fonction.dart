@@ -165,25 +165,21 @@ Widget boutton(BuildContext context, bool charg, Color mycolor, String montexte,
     VoidCallback tap) {
   return Container(
       height: 50,
-      
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(mycolor),
-              shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            )
-          ),
+              backgroundColor: MaterialStateProperty.all<Color>(mycolor),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              )),
           onPressed: tap,
           child: charg
               ? SpinKitCircle(
                   color: Colors.white,
                 )
-              :  Mytext(montexte, 15, Colors.white)
-                ));
+              : Mytext(montexte, 15, Colors.white)));
 }
 
 Widget texte(String texte) {
@@ -195,11 +191,11 @@ Widget texte(String texte) {
 
 // Cette fonction concerne mon Url
 String monurl(String endpoint) {
-  return 'http://192.168.1.7:6060/api/$endpoint';
+  return 'http://192.168.1.3:6060/api/$endpoint';
 }
 
 String ImgDB(String endpoint) {
-  return 'http://192.168.1.7:6060/$endpoint';
+  return 'http://192.168.1.3:6060/$endpoint';
 }
 
 // Cette fonction represente My header
@@ -374,7 +370,7 @@ gridmoncompteRes(
 ) {
   return Container(
     padding: const EdgeInsets.all(1),
-   decoration: BoxDecoration(
+    decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
@@ -406,21 +402,18 @@ gridmoncompteRes(
 
 gridmoncompte(String libelle, IconData icon) {
   return Container(
-     decoration: BoxDecoration(
-                          color: Colors.white,
-                          
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey
-                                  .withOpacity(0.5), // Couleur de l'ombre
-                              spreadRadius: 5, // Étendue de l'ombre
-                              blurRadius: 7, // Flou de l'ombre
-                              offset: Offset(0, 3), // Décalage de l'ombre
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(10)),
+    decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5), // Couleur de l'ombre
+            spreadRadius: 5, // Étendue de l'ombre
+            blurRadius: 7, // Flou de l'ombre
+            offset: Offset(0, 3), // Décalage de l'ombre
+          ),
+        ],
+        borderRadius: BorderRadius.circular(10)),
     padding: const EdgeInsets.all(8),
- 
     child: Column(
       children: [
         Titre(libelle, 17, Colors.black),
@@ -743,8 +736,6 @@ Widget Firs_page(BuildContext context) {
   );
 }
 
-
-
 Widget cards(String indice, String taille, String image) {
   return Card(
     child: ListTile(
@@ -815,6 +806,7 @@ Widget Mytext(String montexte, double Size, Color couleur) {
     textAlign: TextAlign.center,
   );
 }
+
 Widget NewText(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
@@ -822,16 +814,15 @@ Widget NewText(String montexte, double Size, Color couleur) {
       fontSize: Size,
       color: couleur,
     ),
-  
   );
-  
 }
+
 Widget NewBold(String montexte, double Size, Color couleur) {
   return Text(
     montexte,
     style: GoogleFonts.andadaPro(
         fontSize: Size, color: couleur, fontWeight: FontWeight.bold),
-        // textAlign: TextAlign.center,
+    // textAlign: TextAlign.center,
   );
 }
 
@@ -840,7 +831,7 @@ Widget Titre(String montexte, double Size, Color couleur) {
     montexte,
     style: GoogleFonts.andadaPro(
         fontSize: Size, color: couleur, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
+    textAlign: TextAlign.center,
   );
 }
 
@@ -852,16 +843,15 @@ TextSpan MySpan(String libelle, double taille, Color Color) {
 }
 
 // Mes inputs pour la page login
-Widget VraiInput( TextEditingController _controll, String Libelle,IconData Icon ) {
+Widget VraiInput(
+    TextEditingController _controll, String Libelle, IconData Icon) {
   return TextFormField(
     style: GoogleFonts.openSans(
       color: Color.fromARGB(255, 86, 86, 86),
       fontSize: 20,
     ),
     controller: _controll,
-  
-    validator: (value) =>
-        value!.isEmpty ? 'Remplissez correctement ' : null,
+    validator: (value) => value!.isEmpty ? 'Remplissez correctement ' : null,
     decoration: InputDecoration(
       alignLabelWithHint: true,
       hintText: '$Libelle',
@@ -883,35 +873,32 @@ Widget VraiInput( TextEditingController _controll, String Libelle,IconData Icon 
   );
 }
 
-Card cardselection(
-    double large, IconData icon, String texte,String indice, Color couleur, double size) {
+Card cardselection(double large, IconData icon, String texte, String indice,
+    Color couleur, double size) {
   return Card(
     elevation: 3,
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10)
-      ),
-     height: 200,
+          color: Colors.white, borderRadius: BorderRadius.circular(10)),
+      height: 200,
       width: (large / 2 - 20),
-      
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 40,
-              backgroundColor: couleur,
-              child:  NewBold(indice, 15, Colors.white)
+                radius: 40,
+                backgroundColor: couleur,
+                child: NewBold(indice, 15, Colors.white)),
+            SizedBox(
+              height: 5,
             ),
-            SizedBox(height: 5,),
             Text(
               texte,
               textAlign: TextAlign.center,
-              style:  GoogleFonts.openSans(
-                 color: Colors.black,
-                 
+              style: GoogleFonts.openSans(
+                color: Colors.black,
                 fontSize: 15,
               ),
             ),
@@ -921,116 +908,129 @@ Card cardselection(
     ),
   );
 }
- cardreservations(BuildContext context, String days, 
- String number, 
- String mounth,
-  String libelleService,
-  String heure,
-  String prix,
-  String statut
-  
-  ){
-  return   Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey.withOpacity(
-                                                      0.5), // Couleur de l'ombre
-                                                  spreadRadius:
-                                                      1, // Étendue de l'ombre
-                                                  blurRadius:
-                                                      7, // Flou de l'ombre
-                                                  offset: Offset(0,
-                                                      3), // Décalage de l'ombre
-                                                ),
-                                              ],
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.8,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 15),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Center(
-                                                  child: Column(
-                                                    children: [
-                                                      Mytext("$days", 20,
-                                                          Colors.white),
-                                                      Titre("$number", 25,
-                                                          Colors.white),
-                                                      Mytext("$mounth", 20,
-                                                          Colors.white),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 40,
-                                                ),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      FittedBox(
-                                                        // fit: BoxFit.scaleDown,
-                                                        // child: Titre(
-                                                        //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
-                                                        //     15,
-                                                        //     Colors.white),
-                                                        child: Text(
-                                                          "$libelleService",
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                      Mytext(
-                                                          '$heure',
-                                                          15,
-                                                          Colors.white),
-                                                      Titre(
-                                                          '$prix FCFA',
-                                                          15,
-                                                          Colors.white),
-                                                      // SizedBox(height: 5,),
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                width: 1,
-                                                                color: Colors
-                                                                    .white),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        9)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(2),
-                                                          child: Mytext(
-                                                              '$statut',
-                                                              15,
-                                                              Colors.white),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }
+
+cardreservations(
+    BuildContext context,
+    String days,
+    String number,
+    String mounth,
+    String libelleService,
+    String heure,
+    String prix,
+    String statut) {
+  return Container(
+    decoration: BoxDecoration(
+        color: Colors.blue,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5), // Couleur de l'ombre
+            spreadRadius: 1, // Étendue de l'ombre
+            blurRadius: 7, // Flou de l'ombre
+            offset: Offset(0, 3), // Décalage de l'ombre
+          ),
+        ],
+        borderRadius: BorderRadius.circular(10)),
+    width: MediaQuery.of(context).size.width * 0.8,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: Column(
+              children: [
+                Mytext("$days", 20, Colors.white),
+                Titre("$number", 25, Colors.white),
+                Mytext("$mounth", 20, Colors.white),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 40,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FittedBox(
+                  // fit: BoxFit.scaleDown,
+                  // child: Titre(
+                  //     '${result['service']['libelle']}kjkjjkjdijdidifjiodjfosdijfosijdfsdjjkjkjk',
+                  //     15,
+                  //     Colors.white),
+                  child: Text(
+                    "$libelleService",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+                Mytext('$heure', 15, Colors.white),
+                Titre('$prix FCFA', 15, Colors.white),
+                // SizedBox(height: 5,),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.white),
+                      borderRadius: BorderRadius.circular(9)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: Mytext('$statut', 15, Colors.white),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+Widget circlecard(IconData icon) {
+  return CircleAvatar(
+    backgroundColor: Colors.orange[100],
+    child: FaIcon(
+      icon,
+      color: Colors.orange,
+    ),
+  );
+}
+
+Widget circlevalidate(IconData icon) {
+  return CircleAvatar(
+    backgroundColor: Colors.green[100],
+    child: FaIcon(icon, color: Colors.green),
+  );
+}
+
+Widget circlefailed(IconData icon) {
+  return CircleAvatar(
+    backgroundColor: Colors.red[100],
+    child: FaIcon(icon, color: Colors.red),
+  );
+}
+
+Widget aucunRdv() {
+  return SliverToBoxAdapter(
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FaIcon(FontAwesomeIcons.calendarXmark, color: Colors.red, size: 100),
+          SizedBox(height: 5),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Mytext("Aucune réservation", 20, Colors.white),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}

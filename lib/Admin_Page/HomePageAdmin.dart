@@ -1,16 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gestion_salon_coiffure/Admin_Page/Historique.dart';
-
+import 'package:gestion_salon_coiffure/Admin_Page/allReservation.dart';
+import 'package:gestion_salon_coiffure/Admin_Page/annule.dart';
 import 'package:gestion_salon_coiffure/Admin_Page/reservationToday.dart';
 import 'package:gestion_salon_coiffure/Admin_Page/ReservProchain.dart';
 import 'package:gestion_salon_coiffure/Admin_Page/RservTraite.dart';
 import 'package:gestion_salon_coiffure/modules/login_mogule/login_page.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:gestion_salon_coiffure/acceuil/compte.dart';
 import 'package:gestion_salon_coiffure/fonction/fonction.dart';
@@ -34,12 +31,7 @@ class _Home_AdminState extends State<Home_Admin> {
     print(nom);
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
 
-    // mesReservationPourAjourdui();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +88,13 @@ Widget navig(int index) {
     case 0:
       return const firstPage();
     case 1:
-      return historique();
+      return const  allReservation();
 
     case 2:
-      return Compte();
+      return const Compte();
 
     default:
-      return ReservationTraite();
+      return  const ReservationTraite();
   }
 }
 
@@ -133,7 +125,7 @@ class _firstPageState extends State<firstPage> {
   Future<void> mesReservationValider() async {
     final prefs = await SharedPreferences.getInstance();
 
-    var url = monurl("reservationClientValide");
+    var url = monurl("reservationAdminValide");
     final uri = Uri.parse(url);
     final response =
         await http.get(uri, headers: header('${prefs.get('token')}'));
@@ -148,7 +140,7 @@ class _firstPageState extends State<firstPage> {
   Future<void> mesReservationsAvenir() async {
     final prefs = await SharedPreferences.getInstance();
 
-    var url = monurl("reservationAvenir");
+    var url = monurl("reservationAdminAvenir");
     final uri = Uri.parse(url);
     final response =
         await http.get(uri, headers: header('${prefs.get('token')}'));
@@ -156,6 +148,21 @@ class _firstPageState extends State<firstPage> {
     final result = jsonDecode(response.body);
     setState(() {
       mesReservationAvenir = result['data'];
+    });
+  }
+
+  List mesReservationAnnuler = [];
+  Future<void> mesReservationsAnnuler() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    var url = monurl("reservationAdminAnnule");
+    final uri = Uri.parse(url);
+    final response =
+        await http.get(uri, headers: header('${prefs.get('token')}'));
+    print(response.body);
+    final result = jsonDecode(response.body);
+    setState(() {
+      mesReservationAnnuler = result['data'];
     });
   }
 
@@ -176,6 +183,7 @@ class _firstPageState extends State<firstPage> {
     mesReservationPourAjourdui();
     mesReservationsAvenir();
     mesReservationValider();
+    mesReservationsAnnuler();
     getPrefs();
     super.initState();
   }
@@ -226,6 +234,7 @@ class _firstPageState extends State<firstPage> {
             mesReservationPourAjourdui();
             mesReservationsAvenir();
             mesReservationValider();
+            mesReservationsAnnuler();
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -234,7 +243,6 @@ class _firstPageState extends State<firstPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                 
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -254,7 +262,6 @@ class _firstPageState extends State<firstPage> {
                           SizedBox(
                             height: 5,
                           ),
-                         
                           SizedBox(
                             height: 5,
                           ),
@@ -269,7 +276,7 @@ class _firstPageState extends State<firstPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
+                       InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ReservationEnCours()));
@@ -303,6 +310,19 @@ class _firstPageState extends State<firstPage> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => historique()));
+                        },
+                        child: cardselection(
+                            MediaQuery.of(context).size.width,
+                            Icons.padding,
+                            "Reservations annulées",
+                            '${mesReservationAnnuler.length}',
+                            Colors.red,
+                            15),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ReservationProchain()));
                         },
                         child: cardselection(
@@ -313,21 +333,6 @@ class _firstPageState extends State<firstPage> {
                             Colors.orange,
                             15),
                       ),
-                      //  GestureDetector(
-                      //   onTap: (){
-                      //      Navigator.of(context).push(MaterialPageRoute(
-                      //         builder: (context) => historique()));
-
-                      //   },
-                      //   child: cardselection(
-                      //       MediaQuery.of(context).size.width,
-                      //       Icons.padding,
-                      //       "Historiques",
-                      //       '${mesReservationAvenir.length}',
-                      //       Colors.red,
-                      //       15),
-
-                      // ),
                     ],
                   )
                 ],

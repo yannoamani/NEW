@@ -240,7 +240,7 @@ class _CompteState extends State<Compte> {
                                 child:
                                     gridmoncompte("Mon profil", Icons.person),
                               ),
-                              if (IdRole == 1)
+                              if (IdRole == 3)
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(
